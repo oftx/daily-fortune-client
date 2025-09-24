@@ -1,0 +1,12 @@
+{
+  "translation": {
+    "draw": "Draw",
+    "leaderboard": "Leaderboard",
+    "login": "Login",
+    "logout": "Logout",
+    "home": "Home",
+    "profile": "Profile",
+    "settings": "Settings",
+    "yourTodayFortuneIs": "Your today's fortune is "
+  }
+}
