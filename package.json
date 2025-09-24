@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://ys.oftx.top",
+  "homepage": "https://oftx.github.io/daily-fortune-client",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
