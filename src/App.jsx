@@ -43,6 +43,7 @@ const AppContent = () => {
       <Navbar />
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/daily-fortune-client" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/leaderboard" element={<LeaderboardPage />} />
