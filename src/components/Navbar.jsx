@@ -37,9 +37,6 @@ const Navbar = () => {
       <nav className={navbarClassName}>
         <Link to="/" className="nav-brand">{t('navBrand')}</Link>
         <div className="nav-links">
-          <button onClick={toggleTheme} className="theme-toggle-btn">
-            {theme === 'light' ? '☀️' : '🌙'}
-          </button>
           <Link to="/leaderboard" className="nav-item">{t('leaderboard')}</Link>
           {isAuthenticated ? (
             <div className="nav-item user-menu">
@@ -55,6 +52,9 @@ const Navbar = () => {
           ) : (
             <Link to="/login" className="nav-item login-btn">{t('login')}</Link>
           )}
+          <button onClick={toggleTheme} className="theme-toggle-btn">
+            {theme === 'light' ? '☀️' : '🌙'}
+          </button>
         </div>
       </nav>
 
