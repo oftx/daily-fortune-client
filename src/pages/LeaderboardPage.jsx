@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom'; // <-- IMPORT Link
+import { Link } from 'react-router-dom';
 import api from '../services/api';
 
 const LeaderboardPage = () => {
@@ -34,18 +34,24 @@ const LeaderboardPage = () => {
       <div className="leaderboard-section">
         <h2>{t('today')}</h2>
         {leaderboard.length > 0 ? (
+            // --- MODIFICATION: Reworked rendering to join users on one line ---
             <ul className="leaderboard-list">
-              {/* vvv THIS IS THE CHANGE vvv */}
-              {leaderboard.map((entry, index) => (
-                <li key={index}>
-                  {entry.value} -{' '}
-                  <Link to={`/u/${entry.username}`}>
-                    {entry.display_name || entry.username}
-                  </Link>
+              {leaderboard.map((group) => (
+                <li key={group.fortune}>
+                  <strong>{group.fortune}</strong> -{' '}
+                  {group.users.map((user, index) => (
+                    <React.Fragment key={user.username}>
+                      <Link to={`/u/${user.username}`}>
+                        {user.display_name || user.username}
+                      </Link>
+                      {/* Add a comma and space if it's not the last user */}
+                      {index < group.users.length - 1 ? ', ' : ''}
+                    </React.Fragment>
+                  ))}
                 </li>
               ))}
-              {/* ^^^ END OF CHANGE ^^^ */}
             </ul>
+            // --- END OF MODIFICATION ---
         ) : (
             <p>{t('noDrawsToday')}</p>
         )}
