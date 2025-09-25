@@ -7,10 +7,19 @@ import api from '../services/api';
 export const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation(); // <-- Get the i18n instance
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [loading, setLoading] = useState(true);
+
+  // --- NEW: useEffect to sync user's language preference ---
+  useEffect(() => {
+    // If we have a user object and their language preference is different
+    // from the current i18n language, then update i18n.
+    if (user && user.language && i18n.language !== user.language) {
+      i18n.changeLanguage(user.language);
+    }
+  }, [user, i18n]); // Dependencies: run this effect when user or i18n instance changes
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -19,8 +28,10 @@ export const AuthProvider = ({ children }) => {
         if (response.success) {
           setUser(response.data);
         } else {
+          // If fetching profile fails (e.g., token expired), log out.
           localStorage.removeItem('token');
           setToken(null);
+          setUser(null); // Ensure user state is cleared
         }
       }
       setLoading(false);
@@ -32,6 +43,10 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem('token', userToken);
     setToken(userToken);
     setUser(userData);
+    // On login, immediately set the language
+    if (userData.language && i18n.language !== userData.language) {
+      i18n.changeLanguage(userData.language);
+    }
   };
 
   const logout = () => {
