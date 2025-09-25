@@ -1,24 +1,44 @@
-import React from 'react';
+// src/pages/LeaderboardPage.jsx
+
+import React, { useState, useEffect } from 'react';
+import api from '../services/api';
 
 const LeaderboardPage = () => {
+  const [leaderboard, setLeaderboard] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const fetchLeaderboard = async () => {
+      setLoading(true);
+      const response = await api.getLeaderboard();
+      if (response.success) {
+        setLeaderboard(response.data);
+      } else {
+        setError(response.error);
+      }
+      setLoading(false);
+    };
+    fetchLeaderboard();
+  }, []);
+
+  if (loading) return <div className="page-container">Loading leaderboard...</div>;
+  if (error) return <div className="page-container error-message">{error}</div>;
+
   return (
     <div className="page-container leaderboard-container">
       <h1>Fortune Leaderboard</h1>
       <div className="leaderboard-section">
         <h2>Today</h2>
-        <ul className="leaderboard-list">
-          <li>吉 user1</li>
-          <li>凶 user2 user3</li>
-          <li>大吉 user4</li>
-        </ul>
-      </div>
-      <div className="leaderboard-section">
-        <h2>This week</h2>
-        <ul className="leaderboard-list">
-            <li>user1 吉5凶1</li>
-            <li>user2 吉2</li>
-            <li>user3 凶1</li>
-        </ul>
+        {leaderboard.length > 0 ? (
+            <ul className="leaderboard-list">
+              {leaderboard.map((entry, index) => (
+                <li key={index}>{entry.value} - {entry.username}</li>
+              ))}
+            </ul>
+        ) : (
+            <p>No one has drawn a fortune yet today.</p>
+        )}
       </div>
     </div>
   );

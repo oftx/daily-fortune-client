@@ -26,7 +26,7 @@ const LoginPage = () => {
     setError('');
     const response = await api.login(username, password);
     if (response.success) {
-      login(response.data.user, response.data.token);
+      login(response.data.user, response.data.access_token);
       navigate('/me');
     } else {
       setError(response.error || 'Login failed.');

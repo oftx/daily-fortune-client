@@ -16,12 +16,10 @@ import MePage from './pages/MePage';
 import AdminPage from './pages/AdminPage';
 
 const AppContent = () => {
-  // *** Get the new isMouseFrozen state from the context ***
   const { isAutoHideEnabled, showNavbar, hideNavbar, isMouseFrozen } = useUI();
 
   useEffect(() => {
     const handleMouseMove = (event) => {
-      // *** MODIFIED: The listener now checks the frozen state ***
       if (!isAutoHideEnabled || isMouseFrozen) return;
       
       if (event.clientY < 60) {
@@ -36,7 +34,7 @@ const AppContent = () => {
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
     };
-  }, [isAutoHideEnabled, showNavbar, hideNavbar, isMouseFrozen]); // Add isMouseFrozen to dependency array
+  }, [isAutoHideEnabled, showNavbar, hideNavbar, isMouseFrozen]);
 
   return (
     <>
@@ -47,7 +45,10 @@ const AppContent = () => {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/leaderboard" element={<LeaderboardPage />} />
-        <Route path="/@:username" element={<ProfilePage />} />
+        
+        {/* vvv MODIFIED ROUTE vvv */}
+        <Route path="/u/:username" element={<ProfilePage />} />
+
         <Route path="/me" element={<ProtectedRoute><MePage /></ProtectedRoute>} />
         <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
         <Route path="/admin" element={<ProtectedRoute adminOnly={true}><AdminPage /></ProtectedRoute>} />

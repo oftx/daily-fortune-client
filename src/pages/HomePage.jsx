@@ -7,12 +7,14 @@ import { useAuth } from '../hooks/useAuth';
 import { useTheme } from '../context/ThemeContext';
 import { useUI } from '../context/UIContext';
 import Modal from '../components/Modal';
+// --- NEW: Import the local draw function ---
+import { drawFortuneLocally } from '../utils/fortuneUtils';
 
 const HomePage = () => {
   const { t } = useTranslation();
-  const { token } = useAuth();
+  // --- MODIFIED: We now need 'isAuthenticated' to make a decision ---
+  const { isAuthenticated } = useAuth();
   const { theme } = useTheme();
-  // *** Get the new freezeMouseEvents function ***
   const { setAutoHide, hideNavbar, freezeMouseEvents } = useUI();
   const [fortune, setFortune] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -32,6 +34,7 @@ const HomePage = () => {
       return;
     }
     const fortuneInfo = FORTUNE_COLORS[fortune];
+    if (!fortuneInfo) return; // Defensive check
     const vibrantBaseColor = fortuneInfo.background;
     if (theme === 'dark') {
       setDynamicStyle({ backgroundColor: darkenColor(vibrantBaseColor, 20), color: '#d1d1d1' });
@@ -42,18 +45,31 @@ const HomePage = () => {
 
   const handleDraw = async () => {
     setIsLoading(true);
-    const response = await api.drawFortune(token);
-    if (response.success) {
-      setFortune(response.data.fortune);
-      
-      // *** MODIFIED: Call all three functions in the correct order ***
-      freezeMouseEvents(); // 1. Freeze mouse tracking
-      setAutoHide(true);   // 2. Enable the auto-hide feature
-      hideNavbar();        // 3. Immediately hide the navbar
+
+    // --- MODIFIED: Core logic change is here ---
+    if (isAuthenticated) {
+      // If the user is logged in, call the API to save the result
+      const response = await api.drawFortune();
+      if (response.success) {
+        setFortune(response.data.fortune);
+        // Trigger the immersive UI effect
+        freezeMouseEvents();
+        setAutoHide(true);
+        hideNavbar();
+      } else {
+        setModalMessage(response.error || "An unknown error occurred.");
+        setIsModalOpen(true);
+      }
     } else {
-      setModalMessage(response.error || "An unknown error occurred.");
-      setIsModalOpen(true);
+      // If the user is not logged in, draw locally
+      const localFortune = drawFortuneLocally();
+      setFortune(localFortune);
+      // Also trigger the immersive UI effect
+      freezeMouseEvents();
+      setAutoHide(true);
+      hideNavbar();
     }
+
     setIsLoading(false);
   };
   

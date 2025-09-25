@@ -1,49 +1,87 @@
+// src/pages/ProfilePage.jsx
+
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import api from '../services/api';
 import FortuneHeatmap from '../components/FortuneHeatmap';
+import { useAuth } from '../hooks/useAuth';
 
 const ProfilePage = ({ isMePage = false }) => {
-    // 如果是/me页面，从useParams获取的username会是undefined，所以我们用isMePage来判断
     const paramsUsername = useParams().username;
-    // 从useAuth hook获取当前登录用户名 (假设MePage会传入)
-    const username = isMePage ? 'me' : paramsUsername; // 在API中 'me' 是一个特殊标识
+    const { user: currentUser } = useAuth();
     
+    const usernameToFetch = isMePage ? currentUser?.username : paramsUsername;
+
     const [profileData, setProfileData] = useState(null);
+    const [historyData, setHistoryData] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
 
     useEffect(() => {
+        if (!usernameToFetch) {
+            if (isMePage) return;
+            setError("User not specified.");
+            setLoading(false);
+            return;
+        }
+
         const fetchProfile = async () => {
             setLoading(true);
-            // API服务需要能处理 'me' 这个特殊的username
-            const response = await api.getProfileData(username);
-            if (response.success) {
-                setProfileData(response.data);
+            setError('');
+            
+            // For the user's own page, we use getMyProfile to get the extra `has_drawn_today` flag
+            const profilePromise = isMePage 
+                ? api.getMyProfile() 
+                : api.getUserProfile(usernameToFetch);
+
+            const [profileResponse, historyResponse] = await Promise.all([
+                profilePromise,
+                api.getUserFortuneHistory(usernameToFetch)
+            ]);
+
+            if (profileResponse.success) {
+                setProfileData(profileResponse.data);
+            } else {
+                setError(profileResponse.error || "User not found.");
             }
+            
+            if (historyResponse.success) {
+                setHistoryData(historyResponse.data.history);
+            }
+
             setLoading(false);
         };
         fetchProfile();
-    }, [username]);
+    }, [usernameToFetch, isMePage]);
 
     if (loading) return <div className="page-container">Loading profile...</div>;
+    if (error) return <div className="page-container error-message">{error}</div>;
     if (!profileData) return <div className="page-container">User not found.</div>;
 
     return (
         <div className="page-container">
-            {isMePage ? <h1>Good Morning, {profileData.username}!</h1> : <h1>{profileData.username}</h1> }
+            <h1>{profileData.display_name}'s Profile</h1>
             
             <p className="fortune-summary">
-                {isMePage && "今日运势未抽取，前往抽取。"} 过去一年共抽取了50次运势...
+                {/* vvv MODIFICATION FOR PROBLEM 1 vvv */}
+                {isMePage && !profileData.has_drawn_today && (
+                    <span>
+                        Today's fortune not yet drawn. <Link to="/">Draw now</Link>.{' '}
+                    </span>
+                )}
+                Drawn a total of <strong>{profileData.total_draws}</strong> times.
             </p>
 
-            <p className="bio">{profileData.bio}</p>
+            {/* vvv MODIFICATION FOR PROBLEM 2 vvv */}
+            {profileData.bio && (
+                <p className="bio">{profileData.bio}</p>
+            )}
             
             <h3>Fortune History</h3>
-            <FortuneHeatmap data={profileData.history} />
+            <FortuneHeatmap data={historyData} />
             
             <div className="profile-footer">
-                <span>Joined: {profileData.joinDate}</span>
-                <span>Last seen: {profileData.lastOnline}</span>
+                <span>Joined: {new Date(profileData.registration_date).toLocaleDateString()}</span>
             </div>
         </div>
     );

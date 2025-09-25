@@ -1,9 +1,8 @@
 // src/context/AuthContext.jsx
 
 import React, { createContext, useState, useEffect } from 'react';
-import api from '../services/api'; // 引入API
+import api from '../services/api';
 
-// 核心修复：确保 AuthContext 被正确导出
 export const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
@@ -12,27 +11,26 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // 检查本地是否有token
-    const localToken = localStorage.getItem('token');
-    if (localToken) {
-      setToken(localToken);
-      // 在真实应用中，这里应该有一个API调用来验证token并获取用户信息
-      // 为了模拟，我们假设token有效并设置一个假用户
-      // api.getMe(localToken).then(response => { ... });
-      const mockUser = { username: 'testuser', role: 'user' }; 
-      if (localToken === 'fake-admin-token') {
-          mockUser.username = 'admin';
-          mockUser.role = 'admin';
+    const fetchUser = async () => {
+      if (token && !user) { // Prevent re-fetching if user is already set
+        const response = await api.getMyProfile();
+        if (response.success) {
+          setUser(response.data);
+        } else {
+          // Token is invalid or expired, clear it
+          localStorage.removeItem('token');
+          setToken(null);
+        }
       }
-      setUser(mockUser);
-    }
-    setLoading(false);
-  }, []);
+      setLoading(false);
+    };
+    fetchUser();
+  }, [token, user]);
 
   const login = (userData, userToken) => {
-    setUser(userData);
-    setToken(userToken);
     localStorage.setItem('token', userToken);
+    setToken(userToken);
+    setUser(userData);
   };
 
   const logout = () => {
@@ -49,7 +47,6 @@ export const AuthProvider = ({ children }) => {
     isAuthenticated: !!user,
   };
 
-  // 在加载状态结束前，不渲染子组件，避免页面闪烁
   if (loading) {
     return <div>Loading Application...</div>;
   }
