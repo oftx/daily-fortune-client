@@ -60,11 +60,12 @@ const ProfilePage = ({ isMePage = false }) => {
     if (error) return <div className="page-container error-message">{error}</div>;
     if (!profileData) return <div className="page-container">{t('userNotFound')}</div>;
 
-    // --- THIS IS THE CORE CHANGE ---
-    // Conditionally set up styles and classes
     const hasBackground = !!profileData.background_url;
     const wrapperClassName = hasBackground ? "profile-page-wrapper has-background" : "page-container";
     const pageStyles = hasBackground ? { backgroundImage: `url(${profileData.background_url})` } : {};
+
+    // --- NEW: A variable to determine if the top summary text should be shown ---
+    const shouldShowFortuneSummary = (isMePage && !profileData.has_drawn_today) || profileData.has_drawn_today;
 
     return (
         <div className={wrapperClassName} style={pageStyles}>
@@ -83,16 +84,27 @@ const ProfilePage = ({ isMePage = false }) => {
                     <h1>{t('usersProfile', { name: profileData.display_name })}</h1>
                 </div>
                 
-                <p className="fortune-summary">
-                    {isMePage && !profileData.has_drawn_today && (
-                        <span>
-                            {t('notDrawnYet')}. <Link to="/">{t('drawNowLink')}</Link>.{' '}
-                        </span>
-                    )}
-                    <Trans i18nKey="drawnTotalTimes" count={profileData.total_draws}>
-                      Drawn a total of <strong>{{count: profileData.total_draws}}</strong> times.
-                    </Trans>
-                </p>
+                {/* --- MODIFICATION START: This block is now cleaner and conditional --- */}
+                {shouldShowFortuneSummary && (
+                    <p className="fortune-summary">
+                        {/* Case A: Viewing your OWN profile & haven't drawn */}
+                        {isMePage && !profileData.has_drawn_today && (
+                            <span>
+                                {t('notDrawnYet')}{' '}
+                                <Link to="/">{t('drawNowLink')}</Link>
+                            </span>
+                        )}
+
+                        {/* Case B: Any user (self or other) who has drawn */}
+                        {profileData.has_drawn_today && (
+                             <span>
+                                {isMePage ? t('yourTodayFortuneIs') : t('genericTodayFortuneIs')}
+                                <strong>{profileData.todays_fortune}</strong>
+                            </span>
+                        )}
+                    </p>
+                )}
+                {/* --- MODIFICATION END --- */}
 
                 {profileData.bio && (
                     <p className="bio">{profileData.bio}</p>
@@ -101,10 +113,17 @@ const ProfilePage = ({ isMePage = false }) => {
                 <h3>{t('fortuneHistory')}</h3>
                 <FortuneHeatmap data={historyData} />
                 
+                {/* --- MODIFICATION START: Moved total draws count here --- */}
                 <div className="profile-footer">
+                    <span>
+                        <Trans i18nKey="drawnTotalTimes" count={profileData.total_draws}>
+                          Drawn a total of <strong>{{count: profileData.total_draws}}</strong> times.
+                        </Trans>
+                    </span>
                     <span>{t('joined', { date: new Date(profileData.registration_date).toLocaleDateString() })}</span>
                     <span>{t('time.active')}: {formatRelativeTime(profileData.last_active_date, t)}</span>
                 </div>
+                {/* --- MODIFICATION END --- */}
 
             </div>
         </div>
