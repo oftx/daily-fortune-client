@@ -6,24 +6,22 @@ import { useAuth } from '../hooks/useAuth';
 import api from '../services/api';
 
 const SettingsPage = () => {
-    const { i18n } = useTranslation();
+    const { t, i18n } = useTranslation();
     const { user } = useAuth();
 
-    // Form state
-    const [displayName, setDisplayName] = useState(''); // <-- NEW
+    const [displayName, setDisplayName] = useState('');
     const [bio, setBio] = useState('');
     const [avatar, setAvatar] = useState('');
     const [background, setBackground] = useState('');
     const [language, setLanguage] = useState(i18n.language);
     
-    // UI state
     const [loading, setLoading] = useState(true);
     const [message, setMessage] = useState('');
-    const [error, setError] = useState(''); // <-- NEW: for errors
+    const [error, setError] = useState('');
 
     useEffect(() => {
         if (user) {
-            setDisplayName(user.display_name || user.username || ''); // <-- NEW
+            setDisplayName(user.display_name || user.username || '');
             setBio(user.bio || '');
             setAvatar(user.avatar_url || '');
             setBackground(user.background_url || '');
@@ -40,9 +38,9 @@ const SettingsPage = () => {
 
     const handleSave = async () => {
         setMessage('');
-        setError(''); // <-- NEW: reset error
+        setError('');
         const updateData = {
-            display_name: displayName, // <-- NEW
+            display_name: displayName,
             bio: bio,
             avatar_url: avatar,
             background_url: background,
@@ -51,72 +49,75 @@ const SettingsPage = () => {
 
         const response = await api.updateMyProfile(updateData);
         if (response.success) {
-            setMessage("Settings saved successfully! You may need to refresh to see all changes.");
+            setMessage(t('settingsSavedSuccess'));
         } else {
-            // vvv NEW: Handle specific errors from the backend vvv
-            setError(`Error: ${response.error}`);
+            setError(`${t('error')}: ${response.error}`);
         }
     };
 
-    if (loading) return <div className="page-container">Loading settings...</div>;
+    if (loading) return <div className="page-container">{t('loadingSettings')}</div>;
 
     return (
     <div className="page-container settings-container">
-      <h1>Settings</h1>
-      {message && <p style={{ color: 'green' }}>{message}</p>}
-      {error && <p className="error-message">{error}</p>}
+      <h1>{t('settings')}</h1>
       
       <div className="settings-section">
-        <h3>Profile</h3>
+        <h3>{t('profileSection')}</h3>
         <div className="form-group">
-          <label>UserID (cannot be changed)</label>
+          <label>{t('userIdLabelImmutable')}</label>
           <input type="text" value={user.username} disabled />
         </div>
 
-        {/* vvv NEW FIELD vvv */}
         <div className="form-group">
-          <label>Display Name</label>
+          <label>{t('displayNameLabel')}</label>
           <input type="text" value={displayName} onChange={(e) => setDisplayName(e.target.value)} />
         </div>
 
         <div className="form-group">
-          <label>Bio</label>
+          <label>{t('bioLabel')}</label>
           <textarea value={bio} onChange={(e) => setBio(e.target.value)} />
         </div>
         <div className="form-group">
-          <label>Avatar Image Link</label>
+          <label>{t('avatarUrlLabel')}</label>
           <input type="text" value={avatar} onChange={(e) => setAvatar(e.target.value)} />
         </div>
          <div className="form-group">
-          <label>Userpage background Image Link</label>
+          <label>{t('backgroundUrlLabel')}</label>
           <input type="text" value={background} onChange={(e) => setBackground(e.target.value)} />
         </div>
         <div className="form-group">
-          <label>Email Address</label>
+          <label>{t('emailLabel')}</label>
           <input type="text" value={user.email} disabled />
         </div>
       </div>
 
       <div className="settings-section">
-        <h3>Preference</h3>
+        <h3>{t('preferenceSection')}</h3>
         <div className="form-group">
-            <label>Language</label>
+            <label>{t('languageLabel')}</label>
             <select onChange={handleLanguageChange} value={language}>
-                <option value="zh">简体中文 (中国)</option>
-                <option value="en">English</option>
+                <option value="zh">{t('langZh')}</option>
+                <option value="en">{t('langEn')}</option>
             </select>
         </div>
       </div>
       
        <div className="settings-section">
-        <h3>Security</h3>
+        <h3>{t('securitySection')}</h3>
         <div className="form-group">
-            <label>Password</label>
-            <button className="change-password-btn" disabled>Change (Not Implemented)</button>
+            <label>{t('passwordLabel')}</label>
+            <button className="change-password-btn" disabled>{t('changePasswordBtn')}</button>
         </div>
       </div>
+
+      <div style={{ marginBottom: '1rem', minHeight: '1.2em', textAlign: 'center' }}>
+        {message && <p style={{ color: 'green', margin: 0 }}>{message}</p>}
+        {error && <p className="error-message" style={{ margin: 0 }}>{error}</p>}
+      </div>
       
-      <button className="save-settings-btn" onClick={handleSave}>Save Changes</button>
+      <div className="settings-actions">
+        <button className="save-settings-btn" onClick={handleSave}>{t('saveChanges')}</button>
+      </div>
     </div>
   );
 };

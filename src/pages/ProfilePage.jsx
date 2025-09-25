@@ -2,11 +2,13 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { useTranslation, Trans } from 'react-i18next';
 import api from '../services/api';
 import FortuneHeatmap from '../components/FortuneHeatmap';
 import { useAuth } from '../hooks/useAuth';
 
 const ProfilePage = ({ isMePage = false }) => {
+    const { t } = useTranslation();
     const paramsUsername = useParams().username;
     const { user: currentUser } = useAuth();
     
@@ -20,7 +22,7 @@ const ProfilePage = ({ isMePage = false }) => {
     useEffect(() => {
         if (!usernameToFetch) {
             if (isMePage) return;
-            setError("User not specified.");
+            setError(t('userNotSpecified'));
             setLoading(false);
             return;
         }
@@ -29,7 +31,6 @@ const ProfilePage = ({ isMePage = false }) => {
             setLoading(true);
             setError('');
             
-            // For the user's own page, we use getMyProfile to get the extra `has_drawn_today` flag
             const profilePromise = isMePage 
                 ? api.getMyProfile() 
                 : api.getUserProfile(usernameToFetch);
@@ -42,7 +43,7 @@ const ProfilePage = ({ isMePage = false }) => {
             if (profileResponse.success) {
                 setProfileData(profileResponse.data);
             } else {
-                setError(profileResponse.error || "User not found.");
+                setError(profileResponse.error || t('userNotFound'));
             }
             
             if (historyResponse.success) {
@@ -52,36 +53,70 @@ const ProfilePage = ({ isMePage = false }) => {
             setLoading(false);
         };
         fetchProfile();
-    }, [usernameToFetch, isMePage]);
+    }, [usernameToFetch, isMePage, t]);
+    
+    // --- NEW: Add useEffect to manage body class for full-screen background ---
+    useEffect(() => {
+        // When the component mounts and has a background URL, add a class to the body
+        if (profileData?.background_url) {
+            document.body.classList.add('profile-background-active');
+        }
+        // Cleanup function to remove the class when the component unmounts
+        return () => {
+            document.body.classList.remove('profile-background-active');
+        };
+    }, [profileData]);
 
-    if (loading) return <div className="page-container">Loading profile...</div>;
+
+    if (loading) return <div className="page-container">{t('loadingProfile')}</div>;
     if (error) return <div className="page-container error-message">{error}</div>;
-    if (!profileData) return <div className="page-container">User not found.</div>;
+    if (!profileData) return <div className="page-container">{t('userNotFound')}</div>;
 
+    const pageStyles = {};
+    if (profileData.background_url) {
+        pageStyles.backgroundImage = `url(${profileData.background_url})`;
+    }
+
+    // --- MODIFIED: Removed 'page-container' from the main wrapper ---
     return (
-        <div className="page-container">
-            <h1>{profileData.display_name}'s Profile</h1>
-            
-            <p className="fortune-summary">
-                {/* vvv MODIFICATION FOR PROBLEM 1 vvv */}
-                {isMePage && !profileData.has_drawn_today && (
-                    <span>
-                        Today's fortune not yet drawn. <Link to="/">Draw now</Link>.{' '}
-                    </span>
-                )}
-                Drawn a total of <strong>{profileData.total_draws}</strong> times.
-            </p>
+        <div className="profile-page-wrapper" style={pageStyles}>
+            <div className="profile-page-content">
 
-            {/* vvv MODIFICATION FOR PROBLEM 2 vvv */}
-            {profileData.bio && (
-                <p className="bio">{profileData.bio}</p>
-            )}
-            
-            <h3>Fortune History</h3>
-            <FortuneHeatmap data={historyData} />
-            
-            <div className="profile-footer">
-                <span>Joined: {new Date(profileData.registration_date).toLocaleDateString()}</span>
+                <div className="profile-header">
+                    {profileData.avatar_url && (
+                        <div className="profile-avatar">
+                            <img
+                                src={profileData.avatar_url}
+                                alt={`${profileData.display_name}'s avatar`}
+                                className="profile-avatar-image"
+                            />
+                        </div>
+                    )}
+                    <h1>{t('usersProfile', { name: profileData.display_name })}</h1>
+                </div>
+                
+                <p className="fortune-summary">
+                    {isMePage && !profileData.has_drawn_today && (
+                        <span>
+                            {t('notDrawnYet')}. <Link to="/">{t('drawNowLink')}</Link>.{' '}
+                        </span>
+                    )}
+                    <Trans i18nKey="drawnTotalTimes" count={profileData.total_draws}>
+                      Drawn a total of <strong>{{count: profileData.total_draws}}</strong> times.
+                    </Trans>
+                </p>
+
+                {profileData.bio && (
+                    <p className="bio">{profileData.bio}</p>
+                )}
+                
+                <h3>{t('fortuneHistory')}</h3>
+                <FortuneHeatmap data={historyData} />
+                
+                <div className="profile-footer">
+                    <span>{t('joined', { date: new Date(profileData.registration_date).toLocaleDateString() })}</span>
+                </div>
+
             </div>
         </div>
     );

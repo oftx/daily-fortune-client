@@ -1,6 +1,7 @@
 :root {
   --bg-primary: #f4f5f7;
   --bg-secondary: #ffffff;
+  --bg-secondary-rgb: 255, 255, 255;
   --text-primary: #333333;
   --text-secondary: #555555;
   --accent-color: #333333;
@@ -8,10 +9,12 @@
   --shadow-color: rgba(0, 0, 0, 0.1);
   --border-color: #eee;
   --link-color: #007bff;
+  --link-color-rgb: 0, 123, 255;
 }
 body[data-theme='dark'] {
   --bg-primary: #1a1a1a;
   --bg-secondary: #2a2a2a;
+  --bg-secondary-rgb: 42, 42, 42;
   --text-primary: #f0f0f0;
   --text-secondary: #aaaaaa;
   --accent-color: #f0f0f0;
@@ -19,6 +22,7 @@ body[data-theme='dark'] {
   --shadow-color: rgba(255, 255, 255, 0.1);
   --border-color: #444;
   --link-color: #58a6ff;
+  --link-color-rgb: 88, 166, 255;
 }
 body {
   margin: 0;
@@ -58,15 +62,33 @@ body[data-theme='dark'] .navbar { --bg-secondary-rgb: 42, 42, 42; }
 .login-btn { background-color: var(--accent-color); color: var(--accent-text-color); padding: 0.5rem 1rem; border-radius: 5px; }
 .user-menu { position: relative; cursor: pointer; }
 .user-menu .dropdown {
-  display: none; position: absolute; top: 100%; right: 0; background-color: var(--bg-secondary);
-  border-radius: 5px; box-shadow: 0 4px 8px var(--shadow-color); padding: 0.5rem 0; min-width: 150px;
+  display: none; 
+  position: absolute; 
+  top: 100%; 
+  right: 0; 
+  background-color: var(--bg-secondary);
+  border-radius: 5px; 
+  box-shadow: 0 4px 8px var(--shadow-color); 
+  padding: 0.5rem 0; 
+  min-width: 150px;
+  overflow: hidden;
 }
 .user-menu:hover .dropdown { display: block; }
 .user-menu .dropdown a, .user-menu .dropdown button {
-  display: block; width: 100%; text-align: left; padding: 0.5rem 1rem;
-  background: none; border: none; cursor: pointer; text-decoration: none; color: var(--text-primary); font-size: 1rem;
+  display: block; 
+  width: 100%; 
+  text-align: left; 
+  padding: 0.5rem 1rem;
+  background: none; 
+  border: none; 
+  cursor: pointer; 
+  text-decoration: none; 
+  color: var(--text-primary); 
+  font-size: 1rem;
 }
-.user-menu .dropdown a:hover, .user-menu .dropdown button:hover { background-color: var(--bg-primary); }
+.user-menu .dropdown a:hover, .user-menu .dropdown button:hover { 
+  background-color: var(--bg-primary); 
+}
 .home-container {
   display: flex; flex-direction: column; justify-content: center; align-items: center;
   height: 100vh; transition: background-color 0.5s ease, color 0.5s ease; padding: 1rem; margin: 0;
@@ -140,12 +162,25 @@ body[data-theme='dark'] .navbar { --bg-secondary-rgb: 42, 42, 42; }
 .error-message { color: #d9534f; text-align: center; margin-bottom: 1rem; }
 .disabled-link { color: #999; cursor: not-allowed; }
 .settings-container h1 { border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; }
-.settings-section { margin-bottom: 2rem; }
-.settings-section h3 { margin-bottom: 1rem; }
-.settings-section textarea { min-height: 80px; resize: vertical; background-color: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary); width: 100%; padding: 0.75rem; border-radius: 4px; box-sizing: border-box; font-size: 1rem;}
-.settings-section select { width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); background-color: var(--bg-primary); color: var(--text-primary); border-radius: 4px; }
+.settings-section { 
+  margin-bottom: 2.5rem; /* Increased margin for more space */
+}
+.settings-section h3 {
+  font-size: 1.5rem; /* Increased font size */
+  margin: 0 0 1.5rem 0; /* Adjusted margins */
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.75rem;
+}
+
 .change-password-btn { padding: 0.5rem 1rem; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); cursor: pointer; border-radius: 4px; }
 .save-settings-btn { padding: 0.75rem 1.5rem; background: var(--accent-color); color: var(--accent-text-color); border: none; cursor: pointer; border-radius: 4px; }
+
+/* NEW: Wrapper for action buttons */
+.settings-actions {
+  display: flex;
+  justify-content: flex-end; /* Align items to the right */
+}
+
 .fortune-summary, .bio { font-size: 1.1rem; color: var(--text-secondary); }
 .profile-footer { margin-top: 2rem; color: #666; display: flex; gap: 1.5rem; border-top: 1px solid var(--border-color); padding-top: 1rem; }
 .leaderboard-list { list-style: none; padding: 0; }
@@ -172,3 +207,96 @@ body[data-theme='dark'] .react-calendar-heatmap .color-level-3 { fill: hsl(120, 
 body[data-theme='dark'] .react-calendar-heatmap .color-level-4 { fill: hsl(120, 45%, 45%); }
 body[data-theme='dark'] .react-calendar-heatmap .color-level-5 { fill: hsl(120, 50%, 55%); }
 body[data-theme='dark'] .react-calendar-heatmap .color-level-6 { fill: hsl(120, 55%, 65%); }
+
+.settings-section input[type="text"],
+.settings-section textarea,
+.settings-section select {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.settings-section textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.settings-section input[type="text"]:focus,
+.settings-section textarea:focus,
+.settings-section select:focus {
+  outline: none;
+  border-color: var(--link-color);
+  box-shadow: 0 0 0 3px rgba(var(--link-color-rgb), 0.2);
+}
+
+.settings-section input:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.profile-page-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  padding-top: 80px;
+  box-sizing: border-box;
+  z-index: 1; 
+}
+
+.profile-page-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.profile-page-content {
+  position: relative;
+  width: 100%;
+  max-width: 960px;
+  background-color: rgba(var(--bg-secondary-rgb), 0.8);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px var(--shadow-color);
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.profile-avatar {
+  flex-shrink: 0;
+}
+
+.profile-avatar-image {
+  width: 120px;
+  height: 120px;
+  border-radius: 24px;
+  object-fit: cover;
+  box-shadow: 0 4px 15px var(--shadow-color);
+}

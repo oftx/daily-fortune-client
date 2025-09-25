@@ -1,9 +1,11 @@
 // src/pages/LeaderboardPage.jsx
 
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import api from '../services/api';
 
 const LeaderboardPage = () => {
+  const { t } = useTranslation();
   const [leaderboard, setLeaderboard] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -22,14 +24,14 @@ const LeaderboardPage = () => {
     fetchLeaderboard();
   }, []);
 
-  if (loading) return <div className="page-container">Loading leaderboard...</div>;
+  if (loading) return <div className="page-container">{t('loading')}</div>;
   if (error) return <div className="page-container error-message">{error}</div>;
 
   return (
     <div className="page-container leaderboard-container">
-      <h1>Fortune Leaderboard</h1>
+      <h1>{t('leaderboardTitle')}</h1>
       <div className="leaderboard-section">
-        <h2>Today</h2>
+        <h2>{t('today')}</h2>
         {leaderboard.length > 0 ? (
             <ul className="leaderboard-list">
               {leaderboard.map((entry, index) => (
@@ -37,7 +39,7 @@ const LeaderboardPage = () => {
               ))}
             </ul>
         ) : (
-            <p>No one has drawn a fortune yet today.</p>
+            <p>{t('noDrawsToday')}</p>
         )}
       </div>
     </div>

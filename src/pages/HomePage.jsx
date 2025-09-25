@@ -1,3 +1,5 @@
+// src/pages/HomePage.jsx
+
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FORTUNE_COLORS } from '../utils/constants';
@@ -7,12 +9,10 @@ import { useAuth } from '../hooks/useAuth';
 import { useTheme } from '../context/ThemeContext';
 import { useUI } from '../context/UIContext';
 import Modal from '../components/Modal';
-// --- NEW: Import the local draw function ---
 import { drawFortuneLocally } from '../utils/fortuneUtils';
 
 const HomePage = () => {
   const { t } = useTranslation();
-  // --- MODIFIED: We now need 'isAuthenticated' to make a decision ---
   const { isAuthenticated } = useAuth();
   const { theme } = useTheme();
   const { setAutoHide, hideNavbar, freezeMouseEvents } = useUI();
@@ -34,7 +34,7 @@ const HomePage = () => {
       return;
     }
     const fortuneInfo = FORTUNE_COLORS[fortune];
-    if (!fortuneInfo) return; // Defensive check
+    if (!fortuneInfo) return;
     const vibrantBaseColor = fortuneInfo.background;
     if (theme === 'dark') {
       setDynamicStyle({ backgroundColor: darkenColor(vibrantBaseColor, 20), color: '#d1d1d1' });
@@ -46,13 +46,10 @@ const HomePage = () => {
   const handleDraw = async () => {
     setIsLoading(true);
 
-    // --- MODIFIED: Core logic change is here ---
     if (isAuthenticated) {
-      // If the user is logged in, call the API to save the result
       const response = await api.drawFortune();
       if (response.success) {
         setFortune(response.data.fortune);
-        // Trigger the immersive UI effect
         freezeMouseEvents();
         setAutoHide(true);
         hideNavbar();
@@ -61,10 +58,8 @@ const HomePage = () => {
         setIsModalOpen(true);
       }
     } else {
-      // If the user is not logged in, draw locally
       const localFortune = drawFortuneLocally();
       setFortune(localFortune);
-      // Also trigger the immersive UI effect
       freezeMouseEvents();
       setAutoHide(true);
       hideNavbar();
@@ -84,11 +79,13 @@ const HomePage = () => {
           </div>
         ) : (
           <button onClick={handleDraw} disabled={isLoading} className="draw-button">
-            {isLoading ? 'Drawing...' : t('draw')}
+            {isLoading ? t('drawing') : t('draw')}
           </button>
         )}
       </div>
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Error"><p>{modalMessage}</p></Modal>
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={t('error')}>
+        <p>{modalMessage}</p>
+      </Modal>
     </>
   );
 };

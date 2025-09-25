@@ -1,23 +1,24 @@
 // src/context/AuthContext.jsx
 
 import React, { createContext, useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import api from '../services/api';
 
 export const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
+  const { t } = useTranslation();
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchUser = async () => {
-      if (token && !user) { // Prevent re-fetching if user is already set
+      if (token && !user) {
         const response = await api.getMyProfile();
         if (response.success) {
           setUser(response.data);
         } else {
-          // Token is invalid or expired, clear it
           localStorage.removeItem('token');
           setToken(null);
         }
@@ -48,7 +49,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   if (loading) {
-    return <div>Loading Application...</div>;
+    return <div>{t('loadingApp')}</div>;
   }
 
   return (

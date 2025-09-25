@@ -1,9 +1,13 @@
+// src/pages/LoginPage.jsx
+
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../hooks/useAuth';
 import api from '../services/api';
 
 const LoginPage = () => {
+  const { t } = useTranslation();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -36,10 +40,10 @@ const LoginPage = () => {
   return (
     <div className="page-container auth-container">
       <div className="auth-form-wrapper">
-        <h2>Login</h2>
+        <h2>{t('login')}</h2>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="username">Username</label>
+            <label htmlFor="username">{t('usernameLabel')}</label>
             <input
               type="text"
               id="username"
@@ -49,7 +53,7 @@ const LoginPage = () => {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">{t('passwordLabel')}</label>
             <input
               type="password"
               id="password"
@@ -59,16 +63,16 @@ const LoginPage = () => {
             />
           </div>
           {error && <p className="error-message">{error}</p>}
-          <button type="submit" className="auth-button">Login</button>
+          <button type="submit" className="auth-button">{t('login')}</button>
         </form>
         <div className="auth-footer">
           <p>
-            No account?{' '}
+            {t('noAccountPrompt')}{' '}
             {isRegisterOpen ? (
-              <Link to="/register">Click here to register one.</Link>
+              <Link to="/register">{t('registerLink')}</Link>
             ) : (
-              <span className="disabled-link" title="Registration is currently closed.">
-                Registration is closed.
+              <span className="disabled-link" title={t('registrationClosedTooltip')}>
+                {t('registrationClosed')}
               </span>
             )}
           </p>
