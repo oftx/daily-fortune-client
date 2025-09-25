@@ -129,6 +129,15 @@ const fullApi = {
     } catch (error) {
       return { success: false, error: error.response?.data?.detail || "Failed to update visibility." };
     }
+  },
+  
+  updateUserTags: async (userId, tags) => {
+    try {
+      await apiClient.post(`/admin/users/${userId}/tags`, { tags });
+      return { success: true };
+    } catch (error) {
+      return { success: false, error: error.response?.data?.detail || "Failed to update tags." };
+    }
   }
 };
 

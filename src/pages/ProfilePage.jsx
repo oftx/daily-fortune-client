@@ -8,6 +8,27 @@ import FortuneHeatmap from '../components/FortuneHeatmap';
 import { useAuth } from '../hooks/useAuth';
 import { formatRelativeTime } from '../utils/timeUtils';
 
+const tagStyle = {
+    display: 'inline-block',
+    padding: '2px 8px',
+    borderRadius: '12px',
+    fontSize: '0.8rem',
+    marginRight: '6px',
+    marginBottom: '6px',
+};
+
+const customTagStyle = {
+    ...tagStyle,
+    backgroundColor: 'var(--link-color)',
+    color: 'white',
+};
+
+const systemTagStyle = {
+    ...tagStyle,
+    backgroundColor: '#d9534f',
+    color: 'white',
+};
+
 const ProfilePage = ({ isMePage = false }) => {
     const { t } = useTranslation();
     const paramsUsername = useParams().username;
@@ -64,8 +85,20 @@ const ProfilePage = ({ isMePage = false }) => {
     const wrapperClassName = hasBackground ? "profile-page-wrapper has-background" : "page-container";
     const pageStyles = hasBackground ? { backgroundImage: `url(${profileData.background_url})` } : {};
 
-    // --- NEW: A variable to determine if the top summary text should be shown ---
     const shouldShowFortuneSummary = (isMePage && !profileData.has_drawn_today) || profileData.has_drawn_today;
+
+    const allTags = [];
+    if (profileData.status === 'inactive') {
+        allTags.push({ text: t('deactivatedTag'), style: systemTagStyle });
+    }
+    if (profileData.is_hidden) {
+        allTags.push({ text: t('hiddenTag'), style: systemTagStyle });
+    }
+    if (profileData.tags) {
+        profileData.tags.forEach(tag => {
+            allTags.push({ text: tag, style: customTagStyle });
+        });
+    }
 
     return (
         <div className={wrapperClassName} style={pageStyles}>
@@ -81,21 +114,26 @@ const ProfilePage = ({ isMePage = false }) => {
                             />
                         </div>
                     )}
-                    <h1>{t('usersProfile', { name: profileData.display_name })}</h1>
+                    <div>
+                        <h1>{t('usersProfile', { name: profileData.display_name })}</h1>
+                        {allTags.length > 0 && (
+                            <div style={{ marginTop: '0.5rem' }}>
+                                {allTags.map((tag, index) => (
+                                    <span key={index} style={tag.style}>{tag.text}</span>
+                                ))}
+                            </div>
+                        )}
+                    </div>
                 </div>
                 
-                {/* --- MODIFICATION START: This block is now cleaner and conditional --- */}
                 {shouldShowFortuneSummary && (
                     <p className="fortune-summary">
-                        {/* Case A: Viewing your OWN profile & haven't drawn */}
                         {isMePage && !profileData.has_drawn_today && (
                             <span>
                                 {t('notDrawnYet')}{' '}
                                 <Link to="/">{t('drawNowLink')}</Link>
                             </span>
                         )}
-
-                        {/* Case B: Any user (self or other) who has drawn */}
                         {profileData.has_drawn_today && (
                              <span>
                                 {isMePage ? t('yourTodayFortuneIs') : t('genericTodayFortuneIs')}
@@ -104,7 +142,6 @@ const ProfilePage = ({ isMePage = false }) => {
                         )}
                     </p>
                 )}
-                {/* --- MODIFICATION END --- */}
 
                 {profileData.bio && (
                     <p className="bio">{profileData.bio}</p>
@@ -113,7 +150,6 @@ const ProfilePage = ({ isMePage = false }) => {
                 <h3>{t('fortuneHistory')}</h3>
                 <FortuneHeatmap data={historyData} />
                 
-                {/* --- MODIFICATION START: Moved total draws count here --- */}
                 <div className="profile-footer">
                     <span>
                         <Trans i18nKey="drawnTotalTimes" count={profileData.total_draws}>
@@ -123,7 +159,6 @@ const ProfilePage = ({ isMePage = false }) => {
                     <span>{t('joined', { date: new Date(profileData.registration_date).toLocaleDateString() })}</span>
                     <span>{t('time.active')}: {formatRelativeTime(profileData.last_active_date, t)}</span>
                 </div>
-                {/* --- MODIFICATION END --- */}
 
             </div>
         </div>

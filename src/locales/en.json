@@ -88,6 +88,12 @@
     "confirmDeactivateUser": "Are you sure you want to deactivate user {{name}}?",
     "confirmActivateUser": "Are you sure you want to activate user {{name}}?",
     "confirmHideUser": "Are you sure you want to hide user {{name}}?",
-    "confirmUnhideUser": "Are you sure you want to unhide user {{name}}?"
+    "confirmUnhideUser": "Are you sure you want to unhide user {{name}}?",
+    "editTags": "Edit Tags",
+    "deactivatedTag": "Deactivated",
+    "hiddenTag": "Hidden",
+    "addTag": "Add Tag",
+    "save": "Save",
+    "cancel": "Cancel"
   }
 }

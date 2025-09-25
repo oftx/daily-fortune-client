@@ -88,6 +88,12 @@
     "confirmDeactivateUser": "您确定要停用用户 {{name}} 吗？",
     "confirmActivateUser": "您确定要激活用户 {{name}} 吗？",
     "confirmHideUser": "您确定要隐藏用户 {{name}} 吗？",
-    "confirmUnhideUser": "您确定要取消隐藏用户 {{name}} 吗？"
+    "confirmUnhideUser": "您确定要取消隐藏用户 {{name}} 吗？",
+    "editTags": "编辑标签",
+    "deactivatedTag": "已停用",
+    "hiddenTag": "已隐藏",
+    "addTag": "添加标签",
+    "save": "保存",
+    "cancel": "取消"
   }
 }
