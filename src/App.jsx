@@ -1,3 +1,5 @@
+// src/App.jsx
+
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
@@ -46,14 +48,17 @@ const AppContent = () => {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/leaderboard" element={<LeaderboardPage />} />
         
-        {/* vvv MODIFIED ROUTE vvv */}
         <Route path="/u/:username" element={<ProfilePage />} />
 
         <Route path="/me" element={<ProtectedRoute><MePage /></ProtectedRoute>} />
         <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
         <Route path="/admin" element={<ProtectedRoute adminOnly={true}><AdminPage /></ProtectedRoute>} />
       </Routes>
-      <Tooltip id="heatmap-tooltip" />
+      
+      {/* --- THIS IS THE FIX --- */}
+      {/* Add the 'zIndex' prop to ensure the tooltip appears above all other content */}
+      <Tooltip id="heatmap-tooltip" style={{ zIndex: 9999 }} />
+      {/* --- END OF FIX --- */}
     </>
   );
 };
