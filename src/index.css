@@ -161,52 +161,36 @@ body[data-theme='dark'] .navbar { --bg-secondary-rgb: 42, 42, 42; }
 .auth-footer { text-align: center; margin-top: 1.5rem; color: var(--text-secondary); }
 .error-message { color: #d9534f; text-align: center; margin-bottom: 1rem; }
 .disabled-link { color: #999; cursor: not-allowed; }
-.settings-container h1 { border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; }
-.settings-section { 
-  margin-bottom: 2.5rem; /* Increased margin for more space */
-}
-.settings-section h3 {
-  font-size: 1.5rem; /* Increased font size */
-  margin: 0 0 1.5rem 0; /* Adjusted margins */
+
+/* --- SETTINGS PAGE STYLES --- */
+.settings-container h1 {
   border-bottom: 1px solid var(--border-color);
-  padding-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  font-size: 2.5rem; /* Large main title */
+  margin-bottom: 2rem;
+}
+
+.settings-section { 
+  margin-bottom: 2.5rem;
+}
+
+.settings-section h3 {
+  font-size: 1.75rem; /* Larger section title */
+  margin: 0 0 1.5rem 1.5rem; /* 1-unit indent */
+}
+
+/* NEW: Rule for content indentation */
+.settings-section .form-group {
+  margin-left: 3rem; /* 2-unit indent */
+}
+
+.settings-actions {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .change-password-btn { padding: 0.5rem 1rem; border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); cursor: pointer; border-radius: 4px; }
 .save-settings-btn { padding: 0.75rem 1.5rem; background: var(--accent-color); color: var(--accent-text-color); border: none; cursor: pointer; border-radius: 4px; }
-
-/* NEW: Wrapper for action buttons */
-.settings-actions {
-  display: flex;
-  justify-content: flex-end; /* Align items to the right */
-}
-
-.fortune-summary, .bio { font-size: 1.1rem; color: var(--text-secondary); }
-.profile-footer { margin-top: 2rem; color: #666; display: flex; gap: 1.5rem; border-top: 1px solid var(--border-color); padding-top: 1rem; }
-.leaderboard-list { list-style: none; padding: 0; }
-.leaderboard-list li { background: var(--bg-secondary); padding: 1rem; border-radius: 4px; margin-bottom: 0.5rem; }
-.heatmap-container { 
-  margin: 2rem 0; 
-}
-.react-calendar-heatmap text {
-  fill: var(--text-secondary);
-  font-size: 10px;
-}
-.react-calendar-heatmap .color-empty { 
-  fill: var(--border-color); 
-}
-.react-calendar-heatmap .color-level-1 { fill: hsl(120, 25%, 90%); }
-.react-calendar-heatmap .color-level-2 { fill: hsl(120, 30%, 75%); }
-.react-calendar-heatmap .color-level-3 { fill: hsl(120, 40%, 60%); }
-.react-calendar-heatmap .color-level-4 { fill: hsl(120, 50%, 45%); }
-.react-calendar-heatmap .color-level-5 { fill: hsl(120, 60%, 30%); }
-.react-calendar-heatmap .color-level-6 { fill: hsl(120, 70%, 20%); }
-body[data-theme='dark'] .react-calendar-heatmap .color-level-1 { fill: hsl(120, 30%, 15%); }
-body[data-theme='dark'] .react-calendar-heatmap .color-level-2 { fill: hsl(120, 35%, 25%); }
-body[data-theme='dark'] .react-calendar-heatmap .color-level-3 { fill: hsl(120, 40%, 35%); }
-body[data-theme='dark'] .react-calendar-heatmap .color-level-4 { fill: hsl(120, 45%, 45%); }
-body[data-theme='dark'] .react-calendar-heatmap .color-level-5 { fill: hsl(120, 50%, 55%); }
-body[data-theme='dark'] .react-calendar-heatmap .color-level-6 { fill: hsl(120, 55%, 65%); }
 
 .settings-section input[type="text"],
 .settings-section textarea,
@@ -239,6 +223,34 @@ body[data-theme='dark'] .react-calendar-heatmap .color-level-6 { fill: hsl(120, 
   opacity: 0.7;
   cursor: not-allowed;
 }
+
+/* --- OTHER PAGE STYLES --- */
+.fortune-summary, .bio { font-size: 1.1rem; color: var(--text-secondary); }
+.profile-footer { margin-top: 2rem; color: #666; display: flex; gap: 1.5rem; border-top: 1px solid var(--border-color); padding-top: 1rem; }
+.leaderboard-list { list-style: none; padding: 0; }
+.leaderboard-list li { background: var(--bg-secondary); padding: 1rem; border-radius: 4px; margin-bottom: 0.5rem; }
+.heatmap-container { 
+  margin: 2rem 0; 
+}
+.react-calendar-heatmap text {
+  fill: var(--text-secondary);
+  font-size: 10px;
+}
+.react-calendar-heatmap .color-empty { 
+  fill: var(--border-color); 
+}
+.react-calendar-heatmap .color-level-1 { fill: hsl(120, 25%, 90%); }
+.react-calendar-heatmap .color-level-2 { fill: hsl(120, 30%, 75%); }
+.react-calendar-heatmap .color-level-3 { fill: hsl(120, 40%, 60%); }
+.react-calendar-heatmap .color-level-4 { fill: hsl(120, 50%, 45%); }
+.react-calendar-heatmap .color-level-5 { fill: hsl(120, 60%, 30%); }
+.react-calendar-heatmap .color-level-6 { fill: hsl(120, 70%, 20%); }
+body[data-theme='dark'] .react-calendar-heatmap .color-level-1 { fill: hsl(120, 30%, 15%); }
+body[data-theme='dark'] .react-calendar-heatmap .color-level-2 { fill: hsl(120, 35%, 25%); }
+body[data-theme='dark'] .react-calendar-heatmap .color-level-3 { fill: hsl(120, 40%, 35%); }
+body[data-theme='dark'] .react-calendar-heatmap .color-level-4 { fill: hsl(120, 45%, 45%); }
+body[data-theme='dark'] .react-calendar-heatmap .color-level-5 { fill: hsl(120, 50%, 55%); }
+body[data-theme='dark'] .react-calendar-heatmap .color-level-6 { fill: hsl(120, 55%, 65%); }
 
 .profile-page-wrapper {
   position: fixed;
