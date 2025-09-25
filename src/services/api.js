@@ -16,50 +16,6 @@ apiClient.interceptors.request.use(config => {
   return Promise.reject(error);
 });
 
-const api = {
-  // --- Auth Module ---
-  getRegisterStatus: async () => { /* ... */ },
-  login: async (username, password) => { /* ... */ },
-  register: async (username, email, password) => { /* ... */ },
-
-  // --- User Module ---
-  getMyProfile: async () => { /* ... */ },
-  updateMyProfile: async (updateData) => { /* ... */ },
-  
-  // vvv MODIFIED API CALL vvv
-  getUserProfile: async (username) => {
-      try {
-          const response = await apiClient.get(`/users/u/${username}`); // Changed from /@ to /u/
-          return { success: true, data: response.data };
-      } catch (error) {
-          return { success: false, error: "User not found." };
-      }
-  },
-  
-  // vvv MODIFIED API CALL vvv
-  getUserFortuneHistory: async (username) => {
-      try {
-          const response = await apiClient.get(`/users/u/${username}/fortune-history`); // Changed from /@ to /u/
-          const history = response.data.map(item => ({ date: item.date, fortune: item.value }));
-          return { success: true, data: { history } };
-      } catch (error) {
-          return { success: false, error: "Could not fetch history." };
-      }
-  },
-
-  // --- Fortune Module ---
-  drawFortune: async () => { /* ... */ },
-  getLeaderboard: async () => { /* ... */ },
-  
-  // --- Admin Module ---
-  getAllUsers: async () => { /* ... */ }
-};
-
-// --- This is the full code, pasting only the changed functions for brevity.
-// --- Please replace only the getUserProfile and getUserFortuneHistory functions.
-// --- The rest of the file remains the same.
-// --- For completeness, here is the entire file:
-
 const fullApi = {
   getRegisterStatus: async () => {
     try {
@@ -154,6 +110,24 @@ const fullApi = {
         return { success: true, data: response.data };
     } catch(error) {
         return { success: false, error: "Could not fetch users." };
+    }
+  },
+
+  updateUserStatus: async (userId, status) => {
+    try {
+      await apiClient.post(`/admin/users/${userId}/status`, { status });
+      return { success: true };
+    } catch (error) {
+      return { success: false, error: error.response?.data?.detail || "Failed to update status." };
+    }
+  },
+
+  updateUserVisibility: async (userId, is_hidden) => {
+    try {
+      await apiClient.post(`/admin/users/${userId}/visibility`, { is_hidden });
+      return { success: true };
+    } catch (error) {
+      return { success: false, error: error.response?.data?.detail || "Failed to update visibility." };
     }
   }
 };
