@@ -1,12 +1,13 @@
 // src/components/Navbar.jsx
 
-import React, { useState } from 'react'; // Import useState
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../hooks/useAuth';
 import { useTheme } from '../context/ThemeContext';
 import { useUI } from '../context/UIContext';
-import ConfirmModal from './ConfirmModal'; // Import the new component
+import ConfirmModal from './ConfirmModal';
+import { FiMenu, FiX } from 'react-icons/fi';
 
 const Navbar = () => {
   const { t } = useTranslation();
@@ -14,20 +15,38 @@ const Navbar = () => {
   const { theme, toggleTheme } = useTheme();
   const { isNavbarVisible } = useUI();
   const navigate = useNavigate();
+  const location = useLocation();
 
-  // --- NEW: State for the confirmation modal ---
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  // --- MODIFIED: This now opens the modal ---
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [location]);
+
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.classList.add('no-scroll');
+    } else {
+      document.body.classList.remove('no-scroll');
+    }
+    return () => {
+      document.body.classList.remove('no-scroll');
+    };
+  }, [isMenuOpen]);
+
   const handleLogout = () => {
     setIsLogoutModalOpen(true);
   };
   
-  // --- NEW: This function performs the actual logout ---
   const confirmLogout = () => {
     logout();
     setIsLogoutModalOpen(false);
     navigate('/login');
+  };
+  
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
   };
 
   const navbarClassName = `navbar ${!isNavbarVisible ? 'hidden' : ''}`;
@@ -36,6 +55,8 @@ const Navbar = () => {
     <>
       <nav className={navbarClassName}>
         <Link to="/" className="nav-brand">{t('navBrand')}</Link>
+        
+        {/* --- DESKTOP NAVIGATION --- */}
         <div className="nav-links">
           <Link to="/leaderboard" className="nav-item">{t('leaderboard')}</Link>
           {isAuthenticated ? (
@@ -56,9 +77,42 @@ const Navbar = () => {
             {theme === 'light' ? '☀️' : '🌙'}
           </button>
         </div>
+
+        {/* --- MOBILE MENU TOGGLE BUTTON --- */}
+        <button className="menu-toggle" onClick={toggleMenu} aria-label="Open menu">
+          <FiMenu />
+        </button>
       </nav>
 
-      {/* --- NEW: Render the confirmation modal --- */}
+      {/* --- MOBILE NAVIGATION MENU --- */}
+      <div className={`mobile-nav-menu ${isMenuOpen ? 'open' : ''}`}>
+        <button className="menu-close-btn" onClick={toggleMenu} aria-label="Close menu">
+            <FiX />
+        </button>
+
+        <div className="mobile-nav-links">
+          <Link to="/leaderboard" className="nav-item">{t('leaderboard')}</Link>
+          
+          {/* --- MODIFICATION: Flatten the structure for authenticated users --- */}
+          {isAuthenticated ? (
+            <>
+              <Link to="/me" className="nav-item">{user.display_name}</Link>
+              <Link to="/settings" className="nav-item">{t('settings')}</Link>
+              <button onClick={handleLogout} className="nav-item">{t('logout')}</button>
+            </>
+          ) : (
+            <Link to="/login" className="nav-item login-btn">{t('login')}</Link>
+          )}
+          {/* --- END OF MODIFICATION --- */}
+        </div>
+        
+        <div className="mobile-theme-toggle-wrapper">
+            <button onClick={toggleTheme} className="theme-toggle-btn" style={{fontSize: '2rem'}}>
+                {theme === 'light' ? '☀️' : '🌙'}
+            </button>
+        </div>
+      </div>
+
       <ConfirmModal
         isOpen={isLogoutModalOpen}
         onClose={() => setIsLogoutModalOpen(false)}
