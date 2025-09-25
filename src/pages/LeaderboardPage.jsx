@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom'; // <-- IMPORT Link
 import api from '../services/api';
 
 const LeaderboardPage = () => {
@@ -34,9 +35,16 @@ const LeaderboardPage = () => {
         <h2>{t('today')}</h2>
         {leaderboard.length > 0 ? (
             <ul className="leaderboard-list">
+              {/* vvv THIS IS THE CHANGE vvv */}
               {leaderboard.map((entry, index) => (
-                <li key={index}>{entry.value} - {entry.username}</li>
+                <li key={index}>
+                  {entry.value} -{' '}
+                  <Link to={`/u/${entry.username}`}>
+                    {entry.display_name || entry.username}
+                  </Link>
+                </li>
               ))}
+              {/* ^^^ END OF CHANGE ^^^ */}
             </ul>
         ) : (
             <p>{t('noDrawsToday')}</p>

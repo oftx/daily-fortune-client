@@ -57,6 +57,20 @@
     "adminTitle": "用户管理",
     "userListTitle": "所有用户列表 ({{count}}):",
     "userRole": "角色: {{role}}",
-    "loadingApp": "正在加载应用..."
+    "loadingApp": "正在加载应用...",
+    "time": {
+      "active": "活跃于",
+      "justNow": "刚刚",
+      "minutesAgo_one": "{{count}} 分钟前",
+      "minutesAgo_other": "{{count}} 分钟前",
+      "hoursAgo_one": "{{count}} 小时前",
+      "hoursAgo_other": "{{count}} 小时前",
+      "daysAgo_one": "{{count}} 天前",
+      "daysAgo_other": "{{count}} 天前",
+      "monthsAgo_one": "{{count}} 个月前",
+      "monthsAgo_other": "{{count}} 个月前",
+      "yearsAgo_one": "{{count}} 年前",
+      "yearsAgo_other": "{{count}} 年前"
+    }
   }
 }

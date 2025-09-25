@@ -6,6 +6,7 @@ import { useTranslation, Trans } from 'react-i18next';
 import api from '../services/api';
 import FortuneHeatmap from '../components/FortuneHeatmap';
 import { useAuth } from '../hooks/useAuth';
+import { formatRelativeTime } from '../utils/timeUtils'; // <-- IMPORT
 
 const ProfilePage = ({ isMePage = false }) => {
     const { t } = useTranslation();
@@ -54,56 +55,26 @@ const ProfilePage = ({ isMePage = false }) => {
         };
         fetchProfile();
     }, [usernameToFetch, isMePage, t]);
-    
-    // --- NEW: Add useEffect to manage body class for full-screen background ---
-    useEffect(() => {
-        // When the component mounts and has a background URL, add a class to the body
-        if (profileData?.background_url) {
-            document.body.classList.add('profile-background-active');
-        }
-        // Cleanup function to remove the class when the component unmounts
-        return () => {
-            document.body.classList.remove('profile-background-active');
-        };
-    }, [profileData]);
-
 
     if (loading) return <div className="page-container">{t('loadingProfile')}</div>;
     if (error) return <div className="page-container error-message">{error}</div>;
     if (!profileData) return <div className="page-container">{t('userNotFound')}</div>;
 
-    const pageStyles = {};
+    const pageStyles = { /* ... */ };
     if (profileData.background_url) {
         pageStyles.backgroundImage = `url(${profileData.background_url})`;
     }
 
-    // --- MODIFIED: Removed 'page-container' from the main wrapper ---
     return (
         <div className="profile-page-wrapper" style={pageStyles}>
             <div className="profile-page-content">
 
                 <div className="profile-header">
-                    {profileData.avatar_url && (
-                        <div className="profile-avatar">
-                            <img
-                                src={profileData.avatar_url}
-                                alt={`${profileData.display_name}'s avatar`}
-                                className="profile-avatar-image"
-                            />
-                        </div>
-                    )}
-                    <h1>{t('usersProfile', { name: profileData.display_name })}</h1>
+                    {/* ... Avatar and H1 ... */}
                 </div>
                 
                 <p className="fortune-summary">
-                    {isMePage && !profileData.has_drawn_today && (
-                        <span>
-                            {t('notDrawnYet')}. <Link to="/">{t('drawNowLink')}</Link>.{' '}
-                        </span>
-                    )}
-                    <Trans i18nKey="drawnTotalTimes" count={profileData.total_draws}>
-                      Drawn a total of <strong>{{count: profileData.total_draws}}</strong> times.
-                    </Trans>
+                    {/* ... Fortune summary ... */}
                 </p>
 
                 {profileData.bio && (
@@ -115,6 +86,10 @@ const ProfilePage = ({ isMePage = false }) => {
                 
                 <div className="profile-footer">
                     <span>{t('joined', { date: new Date(profileData.registration_date).toLocaleDateString() })}</span>
+                    
+                    {/* vvv THIS IS THE CHANGE vvv */}
+                    <span>{t('time.active')}: {formatRelativeTime(profileData.last_active_date, t)}</span>
+                    {/* ^^^ END OF CHANGE ^^^ */}
                 </div>
 
             </div>
