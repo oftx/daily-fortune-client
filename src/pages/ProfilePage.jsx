@@ -1,12 +1,19 @@
 // src/pages/ProfilePage.jsx
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useTranslation, Trans } from 'react-i18next';
 import api from '../services/api';
 import FortuneHeatmap from '../components/FortuneHeatmap';
 import { useAuth } from '../hooks/useAuth';
 import { formatRelativeTime } from '../utils/timeUtils';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+
+// Extend dayjs with the necessary plugins
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const tagStyle = {
     display: 'inline-block',
@@ -40,6 +47,37 @@ const ProfilePage = ({ isMePage = false }) => {
     const [historyData, setHistoryData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+
+    const heatmapData = useMemo(() => {
+        const displayTimezone = currentUser?.timezone;
+
+        if (!historyData || !displayTimezone || historyData.length === 0) {
+            return [];
+        }
+
+        const groupedByDate = {};
+
+        historyData.forEach(item => {
+            try {
+                // --- THIS IS THE FIX ---
+                // After fixing api.js, `item.date` now holds the correct date string.
+                const date = dayjs(item.date);
+                // --- END OF FIX ---
+                if (!date.isValid()) return;
+
+                const localDateStr = date.tz(displayTimezone).format('YYYY-MM-DD');
+                groupedByDate[localDateStr] = item.fortune; // Use `item.fortune` here
+            } catch (e) {
+                console.error("Error processing date for heatmap:", item.date, e);
+            }
+        });
+        
+        return Object.entries(groupedByDate).map(([date, fortune]) => ({
+            date: date,
+            fortune: fortune,
+        }));
+
+    }, [historyData, currentUser?.timezone]);
 
     useEffect(() => {
         if (!usernameToFetch) {
@@ -148,7 +186,7 @@ const ProfilePage = ({ isMePage = false }) => {
                 )}
                 
                 <h3>{t('fortuneHistory')}</h3>
-                <FortuneHeatmap data={historyData} />
+                <FortuneHeatmap data={heatmapData} />
                 
                 <div className="profile-footer">
                     <span>

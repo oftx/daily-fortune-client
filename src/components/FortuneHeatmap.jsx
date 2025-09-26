@@ -1,3 +1,5 @@
+// src/components/FortuneHeatmap.jsx
+
 import React from 'react';
 import CalendarHeatmap from 'react-calendar-heatmap';
 import 'react-calendar-heatmap/dist/styles.css';
@@ -23,7 +25,6 @@ const FortuneHeatmap = ({ data }) => {
                 endDate={new Date()}
                 values={values}
                 classForValue={colorClassForValue}
-                // *** FIX: Use correct data attributes for react-tooltip v5 ***
                 tooltipDataAttrs={value => {
                     if (!value || !value.date) return null;
                     const fortune = Object.keys(HEATMAP_COLOR_LEVELS).find(key => HEATMAP_COLOR_LEVELS[key] === value.count);

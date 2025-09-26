@@ -94,6 +94,7 @@
     "hiddenTag": "已隐藏",
     "addTag": "添加标签",
     "save": "保存",
-    "cancel": "取消"
+    "cancel": "取消",
+    "timezoneLabel": "时区"
   }
 }

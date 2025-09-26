@@ -1,3 +1,5 @@
+// src/utils/timeUtils.js
+
 /**
  * Formats a date string or Date object into a relative time string.
  * e.g., "5 minutes ago", "2 hours ago".

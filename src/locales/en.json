@@ -94,6 +94,7 @@
     "hiddenTag": "Hidden",
     "addTag": "Add Tag",
     "save": "Save",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "timezoneLabel": "Timezone"
   }
 }

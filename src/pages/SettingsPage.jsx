@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../hooks/useAuth';
 import api from '../services/api';
+import timezones from '../utils/timezones.json';
 
 const SettingsPage = () => {
     const { t, i18n } = useTranslation();
@@ -14,6 +15,7 @@ const SettingsPage = () => {
     const [avatar, setAvatar] = useState('');
     const [background, setBackground] = useState('');
     const [language, setLanguage] = useState(i18n.language);
+    const [timezone, setTimezone] = useState('');
     
     const [loading, setLoading] = useState(true);
     const [message, setMessage] = useState('');
@@ -26,6 +28,7 @@ const SettingsPage = () => {
             setAvatar(user.avatar_url || '');
             setBackground(user.background_url || '');
             setLanguage(user.language || 'zh');
+            setTimezone(user.timezone || 'Asia/Shanghai');
             setLoading(false);
         }
     }, [user]);
@@ -44,7 +47,8 @@ const SettingsPage = () => {
             bio: bio,
             avatar_url: avatar,
             background_url: background,
-            language: language
+            language: language,
+            timezone: timezone,
         };
 
         const response = await api.updateMyProfile(updateData);
@@ -67,12 +71,10 @@ const SettingsPage = () => {
           <label>{t('userIdLabelImmutable')}</label>
           <input type="text" value={user.username} disabled />
         </div>
-
         <div className="form-group">
           <label>{t('displayNameLabel')}</label>
           <input type="text" value={displayName} onChange={(e) => setDisplayName(e.target.value)} />
         </div>
-
         <div className="form-group">
           <label>{t('bioLabel')}</label>
           <textarea value={bio} onChange={(e) => setBio(e.target.value)} />
@@ -98,6 +100,14 @@ const SettingsPage = () => {
             <select onChange={handleLanguageChange} value={language}>
                 <option value="zh">{t('langZh')}</option>
                 <option value="en">{t('langEn')}</option>
+            </select>
+        </div>
+        <div className="form-group">
+            <label>{t('timezoneLabel')}</label>
+            <select onChange={(e) => setTimezone(e.target.value)} value={timezone}>
+                {timezones.map(tz => (
+                    <option key={tz} value={tz}>{tz}</option>
+                ))}
             </select>
         </div>
       </div>

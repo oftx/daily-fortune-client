@@ -79,7 +79,10 @@ const fullApi = {
   getUserFortuneHistory: async (username) => {
       try {
           const response = await apiClient.get(`/users/u/${username}/fortune-history`);
-          const history = response.data.map(item => ({ date: item.date, fortune: item.value }));
+          // --- THIS IS THE FIX ---
+          // The backend returns 'created_at'. We map it to 'date' for frontend use.
+          const history = response.data.map(item => ({ date: item.created_at, fortune: item.value }));
+          // --- END OF FIX ---
           return { success: true, data: { history } };
       } catch (error) {
           return { success: false, error: "Could not fetch history." };
