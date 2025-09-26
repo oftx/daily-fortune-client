@@ -101,7 +101,12 @@ const ProfilePage = ({ isMePage = false }) => {
             ]);
 
             if (profileResponse.success) {
-                setProfileData(profileResponse.data);
+                // --- THIS IS THE FIX for the main issue ---
+                // If it's the "me" page, the user object is nested.
+                // Otherwise, it's the top-level object.
+                const userProfile = isMePage ? profileResponse.data.user : profileResponse.data;
+                setProfileData(userProfile);
+                // --- END OF FIX ---
             } else {
                 setError(profileResponse.error || t('userNotFound'));
             }

@@ -95,6 +95,7 @@
     "addTag": "Add Tag",
     "save": "Save",
     "cancel": "Cancel",
-    "timezoneLabel": "Timezone"
+    "timezoneLabel": "Timezone",
+    "nextDrawLabel": "Next draw in"
   }
 }

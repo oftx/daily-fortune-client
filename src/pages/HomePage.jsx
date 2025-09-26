@@ -21,6 +21,64 @@ const HomePage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [dynamicStyle, setDynamicStyle] = useState({});
+  
+  // --- NEW: State for countdown ---
+  const [nextDrawAt, setNextDrawAt] = useState(null);
+  const [countdown, setCountdown] = useState('');
+
+  // Effect to fetch user's draw status when the page loads
+  useEffect(() => {
+    const checkUserStatus = async () => {
+      if (isAuthenticated) {
+        const response = await api.getMyProfile();
+        // --- MODIFIED: Adjust to the new response structure ---
+        if (response.success && response.data.user && response.data.user.has_drawn_today) {
+          setFortune(response.data.user.todays_fortune);
+          setNextDrawAt(response.data.next_draw_at); // Get time from the outer object
+          setAutoHide(true);
+          hideNavbar();
+        }
+      }
+    };
+    checkUserStatus();
+  }, [isAuthenticated, setAutoHide, hideNavbar]);
+
+  // Effect to manage the countdown timer
+  useEffect(() => {
+    if (!nextDrawAt) {
+      setCountdown('');
+      return;
+    }
+
+    const interval = setInterval(() => {
+      const now = new Date();
+      const target = new Date(nextDrawAt);
+      const diff = target - now;
+
+      if (diff <= 0) {
+        setCountdown('00:00:00');
+        clearInterval(interval);
+        // Reset the page state to allow a new draw
+        setFortune(null);
+        setNextDrawAt(null);
+        setAutoHide(false);
+        return;
+      }
+
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      const formattedCountdown = 
+        `${String(hours).padStart(2, '0')}:` +
+        `${String(minutes).padStart(2, '0')}:` +
+        `${String(seconds).padStart(2, '0')}`;
+      
+      setCountdown(formattedCountdown);
+    }, 1000);
+
+    return () => clearInterval(interval); // Cleanup on component unmount
+  }, [nextDrawAt, setAutoHide]);
 
   useEffect(() => {
     return () => {
@@ -50,6 +108,7 @@ const HomePage = () => {
       const response = await api.drawFortune();
       if (response.success) {
         setFortune(response.data.fortune);
+        setNextDrawAt(response.data.next_draw_at); // <-- Set next draw time from the response
         freezeMouseEvents();
         setAutoHide(true);
         hideNavbar();
@@ -76,6 +135,12 @@ const HomePage = () => {
             <div className="result-backdrop-bar" />
             <span className="fortune-description">{t('yourTodayFortuneIs')}</span>
             <span className="fortune-value">{fortune}</span>
+            {/* --- NEW: Display countdown timer --- */}
+            {countdown && (
+              <p style={{ marginTop: '2rem', fontSize: '1.2rem' }}>
+                {t('nextDrawLabel')}: {countdown}
+              </p>
+            )}
           </div>
         ) : (
           <button onClick={handleDraw} disabled={isLoading} className="draw-button">

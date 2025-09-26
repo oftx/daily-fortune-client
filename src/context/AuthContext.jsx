@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }) => {
       if (token && !user) {
         const response = await api.getMyProfile();
         if (response.success) {
-          setUser(response.data);
+          setUser(response.data.user); // <-- MODIFIED: Use the nested user object
         } else {
           // If fetching profile fails (e.g., token expired), log out.
           localStorage.removeItem('token');
@@ -55,11 +55,17 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('token');
   };
 
+  // --- NEW: Function to update user data in context ---
+  const updateUser = (newUserData) => {
+    setUser(newUserData);
+  };
+
   const authContextValue = {
     user,
     token,
     login,
     logout,
+    updateUser, // <-- EXPORT THE NEW FUNCTION
     isAuthenticated: !!user,
   };
 

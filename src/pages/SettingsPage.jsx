@@ -8,7 +8,7 @@ import timezones from '../utils/timezones.json';
 
 const SettingsPage = () => {
     const { t, i18n } = useTranslation();
-    const { user } = useAuth();
+    const { user, updateUser } = useAuth(); // <-- MODIFIED: Get updateUser function from context
 
     const [displayName, setDisplayName] = useState('');
     const [bio, setBio] = useState('');
@@ -54,6 +54,10 @@ const SettingsPage = () => {
         const response = await api.updateMyProfile(updateData);
         if (response.success) {
             setMessage(t('settingsSavedSuccess'));
+            // --- THIS IS THE FIX for the second issue ---
+            // Update the global user context with the fresh data from the server.
+            updateUser(response.data.user);
+            // --- END OF FIX ---
         } else {
             setError(`${t('error')}: ${response.error}`);
         }
