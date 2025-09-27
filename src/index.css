@@ -225,7 +225,7 @@ body[data-theme='dark'] .navbar { --bg-secondary-rgb: 42, 42, 42; }
 }
 
 /* --- OTHER PAGE STYLES --- */
-.fortune-summary, .bio { font-size: 1.1rem; color: var(--text-secondary); }
+.fortune-summary, .bio { font-size: 1.1rem; color: var(--text-secondary); white-space: pre-wrap; }
 .profile-footer { margin-top: 2rem; color: #666; display: flex; gap: 1.5rem; border-top: 1px solid var(--border-color); padding-top: 1rem; }
 .leaderboard-list { list-style: none; padding: 0; }
 .leaderboard-list li { background: var(--bg-secondary); padding: 1rem; border-radius: 4px; margin-bottom: 0.5rem; }
