@@ -7,9 +7,9 @@ import { FORTUNE_TYPES } from './constants';
  */
 export const drawFortuneLocally = () => {
   // Destructure for easier access
-  const { S_KICHI, DAI_KICHI, KICHI, SHO_KICHI, KYO, DAI_KYO } = FORTUNE_TYPES;
+  const { S_KICHI, DAI_KICHI, KICHI, CHU_KICHI, SHO_KICHI, KYO, DAI_KYO } = FORTUNE_TYPES;
 
-  const goodFortunes = [S_KICHI, DAI_KICHI, KICHI, SHO_KICHI];
+  const goodFortunes = [S_KICHI, DAI_KICHI, KICHI, CHU_KICHI, SHO_KICHI];
   const badFortunes = [KYO, DAI_KYO];
 
   // First stage: 80% chance for a good fortune pool

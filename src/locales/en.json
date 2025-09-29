@@ -96,6 +96,11 @@
     "save": "Save",
     "cancel": "Cancel",
     "timezoneLabel": "Timezone",
-    "nextDrawLabel": "Next draw in"
+    "nextDrawLabel": "Next draw in",
+    "qqLabel": "QQ",
+    "useQqAvatarLabel": "Use QQ avatar as profile picture",
+    "qqAvatarYes": "Yes",
+    "qqAvatarNo": "No",
+    "qqAvatarWarning": "Important: By enabling this, your QQ number will be included in a public avatar link and visible to others in order to generate and display your avatar."
   }
 }

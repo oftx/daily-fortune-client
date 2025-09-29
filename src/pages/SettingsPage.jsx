@@ -8,7 +8,7 @@ import timezones from '../utils/timezones.json';
 
 const SettingsPage = () => {
     const { t, i18n } = useTranslation();
-    const { user, updateUser } = useAuth(); // <-- MODIFIED: Get updateUser function from context
+    const { user, updateUser } = useAuth();
 
     const [displayName, setDisplayName] = useState('');
     const [bio, setBio] = useState('');
@@ -16,6 +16,8 @@ const SettingsPage = () => {
     const [background, setBackground] = useState('');
     const [language, setLanguage] = useState(i18n.language);
     const [timezone, setTimezone] = useState('');
+    const [qq, setQq] = useState('');
+    const [useQqAvatar, setUseQqAvatar] = useState(false);
     
     const [loading, setLoading] = useState(true);
     const [message, setMessage] = useState('');
@@ -29,6 +31,8 @@ const SettingsPage = () => {
             setBackground(user.background_url || '');
             setLanguage(user.language || 'zh');
             setTimezone(user.timezone || 'Asia/Shanghai');
+            setQq(user.qq || '');
+            setUseQqAvatar(user.use_qq_avatar || false);
             setLoading(false);
         }
     }, [user]);
@@ -49,17 +53,29 @@ const SettingsPage = () => {
             background_url: background,
             language: language,
             timezone: timezone,
+            qq: qq ? parseInt(qq, 10) : null,
+            use_qq_avatar: useQqAvatar,
         };
 
         const response = await api.updateMyProfile(updateData);
         if (response.success) {
             setMessage(t('settingsSavedSuccess'));
-            // --- THIS IS THE FIX for the second issue ---
-            // Update the global user context with the fresh data from the server.
             updateUser(response.data.user);
-            // --- END OF FIX ---
         } else {
-            setError(`${t('error')}: ${response.error}`);
+            // --- THIS IS THE FIX ---
+            // Parse the error object to get a human-readable message.
+            let errorMessage = "An unknown error occurred.";
+            if (response.error) {
+                if (Array.isArray(response.error) && response.error.length > 0 && response.error[0].msg) {
+                    // Handle FastAPI validation errors: [{ loc: ..., msg: "...", ... }]
+                    errorMessage = response.error[0].msg;
+                } else if (typeof response.error === 'string') {
+                    // Handle simple string errors
+                    errorMessage = response.error;
+                }
+            }
+            setError(`${t('error')}: ${errorMessage}`);
+            // --- END OF FIX ---
         }
     };
 
@@ -94,6 +110,25 @@ const SettingsPage = () => {
         <div className="form-group">
           <label>{t('emailLabel')}</label>
           <input type="text" value={user.email} disabled />
+        </div>
+        <div className="form-group">
+            <label>{t('qqLabel')}</label>
+            <input 
+                type="number" 
+                value={qq} 
+                onChange={(e) => setQq(e.target.value)} 
+                placeholder="5-10位数字"
+            />
+        </div>
+        <div className="form-group">
+            <label>{t('useQqAvatarLabel')}</label>
+            <select value={useQqAvatar} onChange={(e) => setUseQqAvatar(e.target.value === 'true')}>
+                <option value={true}>{t('qqAvatarYes')}</option>
+                <option value={false}>{t('qqAvatarNo')}</option>
+            </select>
+            <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '0.5rem', textAlign: 'left' }}>
+                {t('qqAvatarWarning')}
+            </p>
         </div>
       </div>
 

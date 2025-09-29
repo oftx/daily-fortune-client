@@ -96,6 +96,11 @@
     "save": "保存",
     "cancel": "取消",
     "timezoneLabel": "时区",
-    "nextDrawLabel": "距离下次抽取"
+    "nextDrawLabel": "距离下次抽取",
+    "qqLabel": "QQ",
+    "useQqAvatarLabel": "将QQ头像作为个人资料头像",
+    "qqAvatarYes": "是",
+    "qqAvatarNo": "否",
+    "qqAvatarWarning": "重要提示：启用后，您的QQ号将包含在公开的头像链接中，并对他人可见，以便生成和展示您的头像。"
   }
 }

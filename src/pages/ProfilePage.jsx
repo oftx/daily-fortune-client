@@ -7,11 +7,11 @@ import api from '../services/api';
 import FortuneHeatmap from '../components/FortuneHeatmap';
 import { useAuth } from '../hooks/useAuth';
 import { formatRelativeTime } from '../utils/timeUtils';
+import { getDisplayAvatar } from '../utils/userUtils'; // <-- 新增导入
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 
-// Extend dayjs with the necessary plugins
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
@@ -50,33 +50,22 @@ const ProfilePage = ({ isMePage = false }) => {
 
     const heatmapData = useMemo(() => {
         const displayTimezone = currentUser?.timezone;
-
-        if (!historyData || !displayTimezone || historyData.length === 0) {
-            return [];
-        }
-
+        if (!historyData || !displayTimezone || historyData.length === 0) return [];
         const groupedByDate = {};
-
         historyData.forEach(item => {
             try {
-                // --- THIS IS THE FIX ---
-                // After fixing api.js, `item.date` now holds the correct date string.
                 const date = dayjs(item.date);
-                // --- END OF FIX ---
                 if (!date.isValid()) return;
-
                 const localDateStr = date.tz(displayTimezone).format('YYYY-MM-DD');
-                groupedByDate[localDateStr] = item.fortune; // Use `item.fortune` here
+                groupedByDate[localDateStr] = item.fortune;
             } catch (e) {
                 console.error("Error processing date for heatmap:", item.date, e);
             }
         });
-        
         return Object.entries(groupedByDate).map(([date, fortune]) => ({
             date: date,
             fortune: fortune,
         }));
-
     }, [historyData, currentUser?.timezone]);
 
     useEffect(() => {
@@ -86,35 +75,23 @@ const ProfilePage = ({ isMePage = false }) => {
             setLoading(false);
             return;
         }
-
         const fetchProfile = async () => {
             setLoading(true);
             setError('');
-            
-            const profilePromise = isMePage 
-                ? api.getMyProfile() 
-                : api.getUserProfile(usernameToFetch);
-
+            const profilePromise = isMePage ? api.getMyProfile() : api.getUserProfile(usernameToFetch);
             const [profileResponse, historyResponse] = await Promise.all([
                 profilePromise,
                 api.getUserFortuneHistory(usernameToFetch)
             ]);
-
             if (profileResponse.success) {
-                // --- THIS IS THE FIX for the main issue ---
-                // If it's the "me" page, the user object is nested.
-                // Otherwise, it's the top-level object.
                 const userProfile = isMePage ? profileResponse.data.user : profileResponse.data;
                 setProfileData(userProfile);
-                // --- END OF FIX ---
             } else {
                 setError(profileResponse.error || t('userNotFound'));
             }
-            
             if (historyResponse.success) {
                 setHistoryData(historyResponse.data.history);
             }
-
             setLoading(false);
         };
         fetchProfile();
@@ -127,36 +104,24 @@ const ProfilePage = ({ isMePage = false }) => {
     const hasBackground = !!profileData.background_url;
     const wrapperClassName = hasBackground ? "profile-page-wrapper has-background" : "page-container";
     const pageStyles = hasBackground ? { backgroundImage: `url(${profileData.background_url})` } : {};
-
     const shouldShowFortuneSummary = (isMePage && !profileData.has_drawn_today) || profileData.has_drawn_today;
 
     const allTags = [];
-    if (profileData.status === 'inactive') {
-        allTags.push({ text: t('deactivatedTag'), style: systemTagStyle });
-    }
-    if (profileData.is_hidden) {
-        allTags.push({ text: t('hiddenTag'), style: systemTagStyle });
-    }
-    if (profileData.tags) {
-        profileData.tags.forEach(tag => {
-            allTags.push({ text: tag, style: customTagStyle });
-        });
-    }
+    if (profileData.status === 'inactive') allTags.push({ text: t('deactivatedTag'), style: systemTagStyle });
+    if (profileData.is_hidden) allTags.push({ text: t('hiddenTag'), style: systemTagStyle });
+    if (profileData.tags) profileData.tags.forEach(tag => allTags.push({ text: tag, style: customTagStyle }));
 
     return (
         <div className={wrapperClassName} style={pageStyles}>
             <div className={hasBackground ? "profile-page-content" : ""}>
-
                 <div className="profile-header">
-                    {profileData.avatar_url && (
-                        <div className="profile-avatar">
-                            <img
-                                src={profileData.avatar_url}
-                                alt={`${profileData.display_name}'s avatar`}
-                                className="profile-avatar-image"
-                            />
-                        </div>
-                    )}
+                    <div className="profile-avatar">
+                        <img
+                            src={getDisplayAvatar(profileData)} // <-- 核心修改
+                            alt={`${profileData.display_name}'s avatar`}
+                            className="profile-avatar-image"
+                        />
+                    </div>
                     <div>
                         <h1>{t('usersProfile', { name: profileData.display_name })}</h1>
                         {allTags.length > 0 && (
@@ -202,7 +167,6 @@ const ProfilePage = ({ isMePage = false }) => {
                     <span>{t('joined', { date: new Date(profileData.registration_date).toLocaleDateString() })}</span>
                     <span>{t('time.active')}: {formatRelativeTime(profileData.last_active_date, t)}</span>
                 </div>
-
             </div>
         </div>
     );
