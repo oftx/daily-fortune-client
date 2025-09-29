@@ -16,13 +16,34 @@ apiClient.interceptors.request.use(config => {
   return Promise.reject(error);
 });
 
+// --- NEW: Centralized API Error Parsing Function ---
+const parseApiError = (error) => {
+  const defaultError = "An unknown error occurred.";
+  
+  // Check for FastAPI validation errors (HTTP 422)
+  if (error.response?.data?.detail && Array.isArray(error.response.data.detail)) {
+    // Return the message from the first validation error object
+    return error.response.data.detail[0]?.msg || defaultError;
+  }
+  
+  // Check for other structured errors (e.g., detail: "string")
+  if (error.response?.data?.detail && typeof error.response.data.detail === 'string') {
+    return error.response.data.detail;
+  }
+  
+  // Fallback for network errors or other unexpected structures
+  return error.message || defaultError;
+};
+
+
 const fullApi = {
   getRegisterStatus: async () => {
     try {
       const response = await apiClient.get('/config/registration-status');
       return { success: true, data: { isOpen: response.data.is_open } };
     } catch (error) {
-      return { success: false, error: error.response?.data?.detail || "Could not connect to server." };
+      // --- MODIFIED: Use the parser ---
+      return { success: false, error: parseApiError(error) };
     }
   },
 
@@ -36,7 +57,8 @@ const fullApi = {
       });
       return { success: true, data: response.data };
     } catch (error) {
-      return { success: false, error: error.response?.data?.detail || "Login failed." };
+      // --- MODIFIED: Use the parser ---
+      return { success: false, error: parseApiError(error) };
     }
   },
 
@@ -45,7 +67,8 @@ const fullApi = {
       const response = await apiClient.post('/auth/register', { username, email, password });
       return { success: true, data: response.data };
     } catch (error) {
-      return { success: false, error: error.response?.data?.detail || "Registration failed." };
+      // --- MODIFIED: Use the parser ---
+      return { success: false, error: parseApiError(error) };
     }
   },
 
@@ -54,7 +77,8 @@ const fullApi = {
       const response = await apiClient.get('/users/me');
       return { success: true, data: response.data };
     } catch (error) {
-      return { success: false, error: error.response?.data?.detail || "Could not fetch profile." };
+      // --- MODIFIED: Use the parser ---
+      return { success: false, error: parseApiError(error) };
     }
   },
   
@@ -63,7 +87,18 @@ const fullApi = {
       const response = await apiClient.patch('/users/me', updateData);
       return { success: true, data: response.data };
     } catch (error) {
-      return { success: false, error: error.response?.data?.detail || "Failed to update profile." };
+      // --- MODIFIED: Use the parser ---
+      return { success: false, error: parseApiError(error) };
+    }
+  },
+
+  changePassword: async (current_password, new_password) => {
+    try {
+      const response = await apiClient.patch('/users/me/password', { current_password, new_password });
+      return { success: true, data: response.data };
+    } catch (error) {
+      // --- MODIFIED: Use the parser ---
+      return { success: false, error: parseApiError(error) };
     }
   },
   
@@ -72,7 +107,8 @@ const fullApi = {
           const response = await apiClient.get(`/users/u/${username}`);
           return { success: true, data: response.data };
       } catch (error) {
-          return { success: false, error: "User not found." };
+          // --- MODIFIED: Use the parser ---
+          return { success: false, error: parseApiError(error) };
       }
   },
   
@@ -82,7 +118,8 @@ const fullApi = {
           const history = response.data.map(item => ({ date: item.created_at, fortune: item.value }));
           return { success: true, data: { history } };
       } catch (error) {
-          return { success: false, error: "Could not fetch history." };
+          // --- MODIFIED: Use the parser ---
+          return { success: false, error: parseApiError(error) };
       }
   },
 
@@ -91,7 +128,8 @@ const fullApi = {
       const response = await apiClient.post('/fortune/draw');
       return { success: true, data: { fortune: response.data.fortune } };
     } catch (error) {
-      return { success: false, error: error.response?.data?.detail || "Could not draw fortune." };
+      // --- MODIFIED: Use the parser ---
+      return { success: false, error: parseApiError(error) };
     }
   },
   
@@ -100,7 +138,8 @@ const fullApi = {
         const response = await apiClient.get('/fortune/leaderboard');
         return { success: true, data: response.data };
     } catch (error) {
-        return { success: false, error: "Could not fetch leaderboard." };
+        // --- MODIFIED: Use the parser ---
+        return { success: false, error: parseApiError(error) };
     }
   },
   
@@ -109,7 +148,8 @@ const fullApi = {
         const response = await apiClient.get('/admin/users');
         return { success: true, data: response.data };
     } catch(error) {
-        return { success: false, error: "Could not fetch users." };
+        // --- MODIFIED: Use the parser ---
+        return { success: false, error: parseApiError(error) };
     }
   },
 
@@ -118,7 +158,8 @@ const fullApi = {
       await apiClient.post(`/admin/users/${userId}/status`, { status });
       return { success: true };
     } catch (error) {
-      return { success: false, error: error.response?.data?.detail || "Failed to update status." };
+      // --- MODIFIED: Use the parser ---
+      return { success: false, error: parseApiError(error) };
     }
   },
 
@@ -127,7 +168,8 @@ const fullApi = {
       await apiClient.post(`/admin/users/${userId}/visibility`, { is_hidden });
       return { success: true };
     } catch (error) {
-      return { success: false, error: error.response?.data?.detail || "Failed to update visibility." };
+      // --- MODIFIED: Use the parser ---
+      return { success: false, error: parseApiError(error) };
     }
   },
   
@@ -136,17 +178,18 @@ const fullApi = {
       await apiClient.post(`/admin/users/${userId}/tags`, { tags });
       return { success: true };
     } catch (error) {
-      return { success: false, error: error.response?.data?.detail || "Failed to update tags." };
+      // --- MODIFIED: Use the parser ---
+      return { success: false, error: parseApiError(error) };
     }
   },
 
-  // --- NEW API FUNCTION ---
   checkUserQqPublicity: async (username) => {
     try {
       const response = await apiClient.get(`/users/u/${username}/qq-public-status`);
-      return { success: true, data: response.data }; // Expected: { is_qq_public: boolean }
+      return { success: true, data: response.data };
     } catch (error) {
-      return { success: false, error: error.response?.data?.detail || "Failed to check QQ status." };
+      // --- MODIFIED: Use the parser ---
+      return { success: false, error: parseApiError(error) };
     }
   }
 };

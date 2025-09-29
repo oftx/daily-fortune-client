@@ -1,13 +1,24 @@
+// src/components/Modal.jsx
+
 import React from 'react';
 
-const Modal = ({ isOpen, onClose, title, children }) => {
+// --- MODIFIED: Added backdropClosable prop with a default value of true ---
+const Modal = ({ isOpen, onClose, title, children, backdropClosable = true }) => {
   if (!isOpen) {
     return null;
   }
 
+  // --- NEW: Handler for backdrop click ---
+  const handleBackdropClick = () => {
+    // Only close the modal if backdrop closing is enabled
+    if (backdropClosable) {
+      onClose();
+    }
+  };
+
   return (
-    // Backdrop: a semi-transparent background. Closes modal on click.
-    <div className="modal-backdrop" onClick={onClose}>
+    // --- MODIFIED: Use the new handler for the backdrop's onClick event ---
+    <div className="modal-backdrop" onClick={handleBackdropClick}>
       {/* Modal Content: stopPropagation prevents backdrop click from firing when clicking inside the content */}
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">

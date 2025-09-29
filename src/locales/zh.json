@@ -51,7 +51,7 @@
     "langZh": "简体中文 (中国)",
     "langEn": "English",
     "securitySection": "安全",
-    "changePasswordBtn": "更改密码 (暂未实现)",
+    "changePasswordBtn": "更改密码",
     "leaderboardTitle": "运势排行榜",
     "today": "今日",
     "noDrawsToday": "今天还没有人抽取运势。",
@@ -101,6 +101,13 @@
     "useQqAvatarLabel": "将QQ头像作为个人资料头像",
     "qqAvatarYes": "是",
     "qqAvatarNo": "否",
-    "qqAvatarWarning": "重要提示：启用后，您的QQ号将包含在公开的头像链接中，并对他人可见，以便生成和展示您的头像。"
+    "qqAvatarWarning": "重要提示：启用后，您的QQ号将包含在公开的头像链接中，并对他人可见，以便生成和展示您的头像。",
+    "changePasswordTitle": "更改密码",
+    "currentPasswordLabel": "当前密码",
+    "newPasswordLabel": "新密码",
+    "confirmNewPasswordLabel": "确认新密码",
+    "passwordMismatchError": "两次输入的新密码不一致。",
+    "passwordChangedSuccess": "密码修改成功。",
+    "confirmChange": "确认修改"
   }
 }
