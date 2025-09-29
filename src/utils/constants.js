@@ -12,7 +12,7 @@ export const FORTUNE_COLORS = {
   [FORTUNE_TYPES.S_KICHI]: { background: '#eec54bff', text: '#FFFFFF' },
   [FORTUNE_TYPES.DAI_KICHI]: { background: '#C73E3A', text: '#FFFFFF' },
   [FORTUNE_TYPES.KICHI]: { background: '#9cca26ff', text: '#FFFFFF' },
-  [FORTUNE_TYPES.CHU_KICHI]: { background: '#FDB162', text: '#FFFFFF' },
+  [FORTUNE_TYPES.CHU_KICHI]: { background: '#eaaa66ff', text: '#FFFFFF' },
   [FORTUNE_TYPES.SHO_KICHI]: { background: '#4cd3cfff', text: '#FFFFFF' },
   [FORTUNE_TYPES.KYO]: { background: '#67278F', text: '#FFFFFF' },
   [FORTUNE_TYPES.DAI_KYO]: { background: '#1A297E', text: '#FFFFFF' },
