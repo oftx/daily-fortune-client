@@ -79,10 +79,7 @@ const fullApi = {
   getUserFortuneHistory: async (username) => {
       try {
           const response = await apiClient.get(`/users/u/${username}/fortune-history`);
-          // --- THIS IS THE FIX ---
-          // The backend returns 'created_at'. We map it to 'date' for frontend use.
           const history = response.data.map(item => ({ date: item.created_at, fortune: item.value }));
-          // --- END OF FIX ---
           return { success: true, data: { history } };
       } catch (error) {
           return { success: false, error: "Could not fetch history." };
@@ -140,6 +137,16 @@ const fullApi = {
       return { success: true };
     } catch (error) {
       return { success: false, error: error.response?.data?.detail || "Failed to update tags." };
+    }
+  },
+
+  // --- NEW API FUNCTION ---
+  checkUserQqPublicity: async (username) => {
+    try {
+      const response = await apiClient.get(`/users/u/${username}/qq-public-status`);
+      return { success: true, data: response.data }; // Expected: { is_qq_public: boolean }
+    } catch (error) {
+      return { success: false, error: error.response?.data?.detail || "Failed to check QQ status." };
     }
   }
 };
