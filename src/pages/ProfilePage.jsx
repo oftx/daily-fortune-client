@@ -7,7 +7,7 @@ import api from '../services/api';
 import FortuneHeatmap from '../components/FortuneHeatmap';
 import { useAuth } from '../hooks/useAuth';
 import { formatRelativeTime } from '../utils/timeUtils';
-import { getDisplayAvatar } from '../utils/userUtils'; // <-- 新增导入
+import { getDisplayAvatar } from '../utils/userUtils';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
@@ -111,17 +111,23 @@ const ProfilePage = ({ isMePage = false }) => {
     if (profileData.is_hidden) allTags.push({ text: t('hiddenTag'), style: systemTagStyle });
     if (profileData.tags) profileData.tags.forEach(tag => allTags.push({ text: tag, style: customTagStyle }));
 
+    // --- FIX: Define the condition for showing an avatar ---
+    const hasAvatarToShow = profileData.avatar_url || (profileData.use_qq_avatar && profileData.qq);
+
     return (
         <div className={wrapperClassName} style={pageStyles}>
             <div className={hasBackground ? "profile-page-content" : ""}>
                 <div className="profile-header">
-                    <div className="profile-avatar">
-                        <img
-                            src={getDisplayAvatar(profileData)} // <-- 核心修改
-                            alt={`${profileData.display_name}'s avatar`}
-                            className="profile-avatar-image"
-                        />
-                    </div>
+                    {/* --- FIX: Use the new condition to render the avatar block --- */}
+                    {hasAvatarToShow && (
+                        <div className="profile-avatar">
+                            <img
+                                src={getDisplayAvatar(profileData)}
+                                alt={`${profileData.display_name}'s avatar`}
+                                className="profile-avatar-image"
+                            />
+                        </div>
+                    )}
                     <div>
                         <h1>{t('usersProfile', { name: profileData.display_name })}</h1>
                         {allTags.length > 0 && (
