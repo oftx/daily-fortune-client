@@ -13,7 +13,8 @@ const Navbar = () => {
   const { t } = useTranslation();
   const { isAuthenticated, user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
-  const { isNavbarVisible } = useUI();
+  // --- MODIFIED: Import pause and resume functions ---
+  const { isNavbarVisible, pauseNavInteraction, resumeNavInteraction } = useUI();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -53,7 +54,12 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className={navbarClassName}>
+      {/* --- MODIFIED: Add onMouseEnter and onMouseLeave handlers --- */}
+      <nav 
+        className={navbarClassName}
+        onMouseEnter={pauseNavInteraction}
+        onMouseLeave={resumeNavInteraction}
+      >
         <Link to="/" className="nav-brand">{t('navBrand')}</Link>
         
         {/* --- DESKTOP NAVIGATION --- */}
@@ -93,7 +99,6 @@ const Navbar = () => {
         <div className="mobile-nav-links">
           <Link to="/leaderboard" className="nav-item">{t('leaderboard')}</Link>
           
-          {/* --- MODIFICATION: Flatten the structure for authenticated users --- */}
           {isAuthenticated ? (
             <>
               <Link to="/me" className="nav-item">{user.display_name}</Link>
@@ -103,7 +108,6 @@ const Navbar = () => {
           ) : (
             <Link to="/login" className="nav-item login-btn">{t('login')}</Link>
           )}
-          {/* --- END OF MODIFICATION --- */}
         </div>
         
         <div className="mobile-theme-toggle-wrapper">

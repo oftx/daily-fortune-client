@@ -18,7 +18,8 @@ import MePage from './pages/MePage';
 import AdminPage from './pages/AdminPage';
 
 const AppContent = () => {
-  const { isAutoHideEnabled, showNavbar, hideNavbar, isMouseFrozen } = useUI();
+  // --- MODIFIED: Import isNavInteractionPaused ---
+  const { isAutoHideEnabled, showNavbar, hideNavbar, isMouseFrozen, isNavInteractionPaused } = useUI();
 
   useEffect(() => {
     const handleMouseMove = (event) => {
@@ -27,7 +28,12 @@ const AppContent = () => {
       if (event.clientY < 60) {
         showNavbar();
       } else {
-        hideNavbar();
+        // --- THIS IS THE FIX ---
+        // Only hide the navbar if the interaction is NOT paused (i.e., mouse is not over the navbar/dropdown)
+        if (!isNavInteractionPaused) {
+          hideNavbar();
+        }
+        // --- END OF FIX ---
       }
     };
 
@@ -36,7 +42,8 @@ const AppContent = () => {
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
     };
-  }, [isAutoHideEnabled, showNavbar, hideNavbar, isMouseFrozen]);
+    // --- MODIFIED: Add isNavInteractionPaused to the dependency array ---
+  }, [isAutoHideEnabled, showNavbar, hideNavbar, isMouseFrozen, isNavInteractionPaused]);
 
   return (
     <>
@@ -55,10 +62,7 @@ const AppContent = () => {
         <Route path="/admin" element={<ProtectedRoute adminOnly={true}><AdminPage /></ProtectedRoute>} />
       </Routes>
       
-      {/* --- THIS IS THE FIX --- */}
-      {/* Add the 'zIndex' prop to ensure the tooltip appears above all other content */}
       <Tooltip id="heatmap-tooltip" style={{ zIndex: 9999 }} />
-      {/* --- END OF FIX --- */}
     </>
   );
 };
