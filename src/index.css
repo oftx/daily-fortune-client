@@ -243,22 +243,22 @@ body[data-theme='dark'] .navbar { --bg-secondary-rgb: 42, 42, 42; }
 }
 
 /* --- HEATMAP COLORS (LIGHT THEME) --- */
-.react-calendar-heatmap .color-level-1 { fill: hsl(120, 25%, 90%); }
-.react-calendar-heatmap .color-level-2 { fill: hsl(120, 30%, 75%); }
-.react-calendar-heatmap .color-level-3 { fill: hsl(120, 40%, 60%); }
-.react-calendar-heatmap .color-level-4 { fill: hsl(120, 50%, 45%); }
-.react-calendar-heatmap .color-level-5 { fill: hsl(120, 60%, 30%); }
-.react-calendar-heatmap .color-level-6 { fill: hsl(120, 70%, 20%); }
-.react-calendar-heatmap .color-level-7 { fill: hsl(120, 80%, 15%); } /* --- FIX: ADDED LEVEL 7 --- */
+.react-calendar-heatmap .color-level-1 { fill: #e57373; } /* 大凶 - Soft Red */
+.react-calendar-heatmap .color-level-2 { fill: #ffab91; } /* 凶 - Lighter Peach Red */
+.react-calendar-heatmap .color-level-3 { fill: #a5d6a7; } /* 小吉 - Light Green */
+.react-calendar-heatmap .color-level-4 { fill: #81c784; } /* 中吉 - Medium Light Green */
+.react-calendar-heatmap .color-level-5 { fill: #66bb6a; } /* 吉 - Green */
+.react-calendar-heatmap .color-level-6 { fill: #4caf50; } /* 大吉 - Strong Green */
+.react-calendar-heatmap .color-level-7 { fill: #ffd54f; } /* 諭吉 - Amber */
 
 /* --- HEATMAP COLORS (DARK THEME) --- */
-body[data-theme='dark'] .react-calendar-heatmap .color-level-1 { fill: hsl(120, 30%, 15%); }
-body[data-theme='dark'] .react-calendar-heatmap .color-level-2 { fill: hsl(120, 35%, 25%); }
-body[data-theme='dark'] .react-calendar-heatmap .color-level-3 { fill: hsl(120, 40%, 35%); }
-body[data-theme='dark'] .react-calendar-heatmap .color-level-4 { fill: hsl(120, 45%, 45%); }
-body[data-theme='dark'] .react-calendar-heatmap .color-level-5 { fill: hsl(120, 50%, 55%); }
-body[data-theme='dark'] .react-calendar-heatmap .color-level-6 { fill: hsl(120, 55%, 65%); }
-body[data-theme='dark'] .react-calendar-heatmap .color-level-7 { fill: hsl(120, 60%, 75%); } /* --- FIX: ADDED LEVEL 7 --- */
+body[data-theme='dark'] .react-calendar-heatmap .color-level-1 { fill: #b71c1c; } /* 大凶 - Deep Red */
+body[data-theme='dark'] .react-calendar-heatmap .color-level-2 { fill: #d84315; } /* 凶 - Deep Orange */
+body[data-theme='dark'] .react-calendar-heatmap .color-level-3 { fill: #2e7d32; } /* 小吉 - Dark Green */
+body[data-theme='dark'] .react-calendar-heatmap .color-level-4 { fill: #388e3c; } /* 中吉 - Medium Dark Green */
+body[data-theme='dark'] .react-calendar-heatmap .color-level-5 { fill: #43a047; } /* 吉 - Brighter Dark Green */
+body[data-theme='dark'] .react-calendar-heatmap .color-level-6 { fill: #66bb6a; } /* 大吉 - Vibrant Green */
+body[data-theme='dark'] .react-calendar-heatmap .color-level-7 { fill: #ffb300; } /* 諭吉 - Vivid Amber */
 
 .profile-page-wrapper {
   position: fixed;
