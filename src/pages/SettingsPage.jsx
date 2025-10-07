@@ -9,7 +9,8 @@ import ChangePasswordModal from '../components/ChangePasswordModal';
 
 const SettingsPage = () => {
     const { t, i18n } = useTranslation();
-    const { user, updateUser } = useAuth();
+    // --- MODIFIED: Destructure updateToken from useAuth ---
+    const { user, updateUser, updateToken } = useAuth();
 
     const [displayName, setDisplayName] = useState('');
     const [bio, setBio] = useState('');
@@ -65,17 +66,24 @@ const SettingsPage = () => {
             setMessage(t('settingsSavedSuccess'));
             updateUser(response.data.user);
         } else {
-            // --- MODIFIED: Simplified error handling ---
-            // The error from api.js is now guaranteed to be a string.
             setError(`${t('error')}: ${response.error}`);
         }
     };
     
+    // --- MODIFIED: The function now updates the token in the context on success ---
     const handleChangePassword = async (currentPassword, newPassword) => {
       const response = await api.changePassword(currentPassword, newPassword);
+      
+      // If the API call was successful and returned a new access token...
+      if (response.success && response.data.access_token) {
+        // ...update the token in our application's state and localStorage.
+        updateToken(response.data.access_token);
+      }
+
+      // Return the result to the modal so it can display success/error messages.
       return {
         success: response.success,
-        error: response.error, // This is now a string, safe for rendering
+        error: response.error,
       };
     };
 
