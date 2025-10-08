@@ -62,32 +62,32 @@ body[data-theme='dark'] .navbar { --bg-secondary-rgb: 42, 42, 42; }
 .login-btn { background-color: var(--accent-color); color: var(--accent-text-color); padding: 0.5rem 1rem; border-radius: 5px; }
 .user-menu { position: relative; cursor: pointer; }
 .user-menu .dropdown {
-  display: none; 
-  position: absolute; 
-  top: 100%; 
-  right: 0; 
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
   background-color: var(--bg-secondary);
-  border-radius: 5px; 
-  box-shadow: 0 4px 8px var(--shadow-color); 
-  padding: 0.5rem 0; 
+  border-radius: 5px;
+  box-shadow: 0 4px 8px var(--shadow-color);
+  padding: 0.5rem 0;
   min-width: 150px;
   overflow: hidden;
 }
 .user-menu:hover .dropdown { display: block; }
 .user-menu .dropdown a, .user-menu .dropdown button {
-  display: block; 
-  width: 100%; 
-  text-align: left; 
+  display: block;
+  width: 100%;
+  text-align: left;
   padding: 0.5rem 1rem;
-  background: none; 
-  border: none; 
-  cursor: pointer; 
-  text-decoration: none; 
-  color: var(--text-primary); 
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--text-primary);
   font-size: 1rem;
 }
-.user-menu .dropdown a:hover, .user-menu .dropdown button:hover { 
-  background-color: var(--bg-primary); 
+.user-menu .dropdown a:hover, .user-menu .dropdown button:hover {
+  background-color: var(--bg-primary);
 }
 .home-container {
   display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -170,7 +170,7 @@ body[data-theme='dark'] .navbar { --bg-secondary-rgb: 42, 42, 42; }
   margin-bottom: 2rem;
 }
 
-.settings-section { 
+.settings-section {
   margin-bottom: 2.5rem;
 }
 
@@ -231,34 +231,48 @@ body[data-theme='dark'] .navbar { --bg-secondary-rgb: 42, 42, 42; }
 .profile-footer { margin-top: 2rem; color: #666; display: flex; gap: 1.5rem; border-top: 1px solid var(--border-color); padding-top: 1rem; }
 .leaderboard-list { list-style: none; padding: 0; }
 .leaderboard-list li { background: var(--bg-secondary); padding: 1rem; border-radius: 4px; margin-bottom: 0.5rem; }
-.heatmap-container { 
-  margin: 2rem 0; 
+.heatmap-container {
+  margin: 2rem 0;
 }
 .react-calendar-heatmap text {
   fill: var(--text-secondary);
   font-size: 10px;
 }
-.react-calendar-heatmap .color-empty { 
-  fill: var(--border-color); 
+
+/* --- HEATMAP STYLES --- */
+.react-calendar-heatmap rect {
+  rx: 2;
+  ry: 2;
 }
 
-/* --- HEATMAP COLORS (LIGHT THEME) --- */
-.react-calendar-heatmap .color-level-1 { fill: #e57373; } /* 大凶 - Soft Red */
-.react-calendar-heatmap .color-level-2 { fill: #ffab91; } /* 凶 - Lighter Peach Red */
-.react-calendar-heatmap .color-level-3 { fill: #a5d6a7; } /* 小吉 - Light Green */
-.react-calendar-heatmap .color-level-4 { fill: #81c784; } /* 中吉 - Medium Light Green */
-.react-calendar-heatmap .color-level-5 { fill: #66bb6a; } /* 吉 - Green */
-.react-calendar-heatmap .color-level-6 { fill: #4caf50; } /* 大吉 - Strong Green */
-.react-calendar-heatmap .color-level-7 { fill: #ffd54f; } /* 諭吉 - Amber */
+.react-calendar-heatmap .color-empty {
+  fill: var(--border-color);
+  stroke: #dddddd;
+  stroke-width: 0;
+}
 
-/* --- HEATMAP COLORS (DARK THEME) --- */
-body[data-theme='dark'] .react-calendar-heatmap .color-level-1 { fill: #b71c1c; } /* 大凶 - Deep Red */
-body[data-theme='dark'] .react-calendar-heatmap .color-level-2 { fill: #d84315; } /* 凶 - Deep Orange */
-body[data-theme='dark'] .react-calendar-heatmap .color-level-3 { fill: #2e7d32; } /* 小吉 - Dark Green */
-body[data-theme='dark'] .react-calendar-heatmap .color-level-4 { fill: #388e3c; } /* 中吉 - Medium Dark Green */
-body[data-theme='dark'] .react-calendar-heatmap .color-level-5 { fill: #43a047; } /* 吉 - Brighter Dark Green */
-body[data-theme='dark'] .react-calendar-heatmap .color-level-6 { fill: #66bb6a; } /* 大吉 - Vibrant Green */
-body[data-theme='dark'] .react-calendar-heatmap .color-level-7 { fill: #ffb300; } /* 諭吉 - Vivid Amber */
+/* Light Theme Heatmap Colors & Strokes */
+.react-calendar-heatmap .color-level-1 { fill: #d32f2f; stroke: #b52828; stroke-width: 0.05; }
+.react-calendar-heatmap .color-level-2 { fill: #e57373; stroke: #c85656; stroke-width: 0.05; }
+.react-calendar-heatmap .color-level-3 { fill: #aceebb; stroke: #91d4a3; stroke-width: 0.05; }
+.react-calendar-heatmap .color-level-4 { fill: #78d593; stroke: #5fc07b; stroke-width: 0.05; }
+.react-calendar-heatmap .color-level-5 { fill: #4ac26b; stroke: #38a858; stroke-width: 0.05; }
+.react-calendar-heatmap .color-level-6 { fill: #2da44e; stroke: #24873f; stroke-width: 0.05; }
+.react-calendar-heatmap .color-level-7 { fill: #116329; stroke: #0c4a1f; stroke-width: 0.05; }
+
+/* Dark Theme Heatmap Colors (No Strokes) */
+body[data-theme='dark'] .react-calendar-heatmap .color-empty,
+body[data-theme='dark'] .react-calendar-heatmap [class*="color-level-"] {
+  stroke-width: 0;
+}
+
+body[data-theme='dark'] .react-calendar-heatmap .color-level-1 { fill: #ef9a9a; }
+body[data-theme='dark'] .react-calendar-heatmap .color-level-2 { fill: #e57373; }
+body[data-theme='dark'] .react-calendar-heatmap .color-level-3 { fill: #033a16; }
+body[data-theme='dark'] .react-calendar-heatmap .color-level-4 { fill: #196c2e; }
+body[data-theme='dark'] .react-calendar-heatmap .color-level-5 { fill: #2ea043; }
+body[data-theme='dark'] .react-calendar-heatmap .color-level-6 { fill: #42bb53; }
+body[data-theme='dark'] .react-calendar-heatmap .color-level-7 { fill: #56d364; }
 
 .profile-page-wrapper {
   position: fixed;
@@ -275,7 +289,7 @@ body[data-theme='dark'] .react-calendar-heatmap .color-level-7 { fill: #ffb300; 
   padding: 20px;
   padding-top: 80px;
   box-sizing: border-box;
-  z-index: 1; 
+  z-index: 1;
 }
 
 .profile-page-wrapper::before {
@@ -411,7 +425,7 @@ body.no-scroll {
   .nav-links {
     display: none;
   }
-  
+
   .menu-toggle {
     display: block;
   }
