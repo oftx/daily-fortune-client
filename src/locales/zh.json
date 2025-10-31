@@ -28,8 +28,8 @@
     "haveAccountPrompt": "已有账户？",
     "loginLink": "点此登录。",
     "usersProfile": "{{name}}",
-    "drawnTotalTimes_one": "总共抽取了 <strong>{{count}}</strong> 次。",
-    "drawnTotalTimes_other": "总共抽取了 <strong>{{count}}</strong> 次。",
+    "drawnTotalTimes_one": "总共抽取了 <strong>{{count}}</strong> 次",
+    "drawnTotalTimes_other": "总共抽取了 <strong>{{count}}</strong> 次",
     "fortuneHistory": "运势历史",
     "joined": "加入于: {{date}}",
     "loadingProfile": "正在加载个人资料...",
@@ -108,6 +108,8 @@
     "confirmNewPasswordLabel": "确认新密码",
     "passwordMismatchError": "两次输入的新密码不一致。",
     "passwordChangedSuccess": "密码修改成功。",
-    "confirmChange": "确认修改"
+    "confirmChange": "确认修改",
+    "rarityScore": "稀有度分数",
+    "rarityScoreDescription": "计算所有最近一年结果的稀有度分数"
   }
 }
