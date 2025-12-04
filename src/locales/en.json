@@ -110,6 +110,15 @@
     "passwordChangedSuccess": "Password changed successfully.",
     "confirmChange": "Confirm Change",
     "rarityScore": "Rarity Score",
-    "rarityScoreDescription": "Calculated based on the results from the last year"
+    "rarityScoreDescription": "Score based on probability and composition",
+    "clickToViewChart": "Click to view history",
+    "rarityScoreHistory": "Rarity Score History",
+    "compareWith": "Compare with",
+    "selectUser": "Select User",
+    "inputUsername": "Input Username",
+    "leaderboard": "Leaderboard",
+    "loadingComparison": "Loading comparison data...",
+    "enterUsername": "Enter username",
+    "compare": "Compare"
   }
 }

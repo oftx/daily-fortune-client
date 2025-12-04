@@ -135,10 +135,10 @@ body[data-theme='dark'] .navbar { --bg-secondary-rgb: 42, 42, 42; }
 }
 .modal-content {
   background: var(--bg-secondary); padding: 20px; border-radius: 8px;
-  width: 90%; max-width: 500px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  width: 90%; max-width: 800px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 .modal-header { border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
-.modal-title { margin: 0; font-size: 1.25rem; }
+.modal-title { margin: 0; font-size: 1.5rem; font-weight: bold; color: var(--text-primary); }
 .modal-close-btn { background: transparent; border: none; font-size: 1.5rem; line-height: 1; cursor: pointer; color: var(--text-secondary); }
 .theme-toggle-btn {
     background: transparent;
@@ -429,4 +429,21 @@ body.no-scroll {
   .menu-toggle {
     display: block;
   }
+}
+
+/* --- THEME AWARE INPUTS --- */
+.theme-input {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 0.5rem;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.theme-input:focus {
+  outline: none;
+  border-color: var(--link-color);
+  box-shadow: 0 0 0 3px rgba(var(--link-color-rgb), 0.2);
 }

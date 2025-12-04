@@ -110,6 +110,14 @@
     "passwordChangedSuccess": "密码修改成功。",
     "confirmChange": "确认修改",
     "rarityScore": "稀有度分数",
-    "rarityScoreDescription": "计算所有最近一年结果的稀有度分数"
+    "rarityScoreDescription": "基于概率和构成的稀有度评分",
+    "clickToViewChart": "点击查看历史",
+    "rarityScoreHistory": "稀有度分数历史",
+    "compareWith": "对比用户",
+    "selectUser": "选择用户",
+    "inputUsername": "手动输入",
+    "loadingComparison": "正在加载对比数据...",
+    "enterUsername": "输入用户名",
+    "compare": "对比"
   }
 }

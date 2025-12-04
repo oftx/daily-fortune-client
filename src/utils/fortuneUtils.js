@@ -6,22 +6,22 @@ import { FORTUNE_TYPES } from './constants';
  * @returns {string} A fortune value (e.g., '大吉').
  */
 export const drawFortuneLocally = () => {
-  // Destructure for easier access
-  const { S_KICHI, DAI_KICHI, KICHI, CHU_KICHI, SHO_KICHI, KYO, DAI_KYO } = FORTUNE_TYPES;
+    // Destructure for easier access
+    const { S_KICHI, DAI_KICHI, KICHI, CHU_KICHI, SHO_KICHI, KYO, DAI_KYO } = FORTUNE_TYPES;
 
-  const goodFortunes = [S_KICHI, DAI_KICHI, KICHI, CHU_KICHI, SHO_KICHI];
-  const badFortunes = [KYO, DAI_KYO];
+    const goodFortunes = [S_KICHI, DAI_KICHI, KICHI, CHU_KICHI, SHO_KICHI];
+    const badFortunes = [KYO, DAI_KYO];
 
-  // First stage: 80% chance for a good fortune pool
-  if (Math.random() <= 0.8) {
-    // Second stage: Equal chance within the good pool
-    const index = Math.floor(Math.random() * goodFortunes.length);
-    return goodFortunes[index];
-  } else {
-    // Second stage: Equal chance within the bad pool
-    const index = Math.floor(Math.random() * badFortunes.length);
-    return badFortunes[index];
-  }
+    // First stage: 80% chance for a good fortune pool
+    if (Math.random() <= 0.8) {
+        // Second stage: Equal chance within the good pool
+        const index = Math.floor(Math.random() * goodFortunes.length);
+        return goodFortunes[index];
+    } else {
+        // Second stage: Equal chance within the bad pool
+        const index = Math.floor(Math.random() * badFortunes.length);
+        return badFortunes[index];
+    }
 };
 
 
@@ -120,16 +120,26 @@ export function calculateEnhancedRarityScore(counts, logBase = 10) {
     // --- 3. 计算【分布稀有度分数】 ---
     let distributionTailProb = 0;
     const mean = n_total * config.ji_group.prob;
-    
-    const combinations = (n, k) => Math.exp(logFactorial(n) - logFactorial(k) - logFactorial(n - k));
-    const binomialProbability = (k, n, p) => combinations(n, k) * Math.pow(p, k) * Math.pow(1 - p, n - k);
+
+    // 使用对数域计算二项分布概率，避免中间值溢出或下溢
+    const binomialProbability = (k, n, p) => {
+        // log(C(n,k)) + k*log(p) + (n-k)*log(1-p)
+        const logComb = logFactorial(n) - logFactorial(k) - logFactorial(n - k);
+        const logProb = logComb + k * Math.log(p) + (n - k) * Math.log(1 - p);
+        return Math.exp(logProb);
+    };
 
     if (k_ji_total <= mean) {
         for (let i = 0; i <= k_ji_total; i++) distributionTailProb += binomialProbability(i, n_total, config.ji_group.prob);
     } else {
         for (let i = k_ji_total; i <= n_total; i++) distributionTailProb += binomialProbability(i, n_total, config.ji_group.prob);
     }
-    
+
+    // 防止 log(0)
+    if (distributionTailProb <= 0) {
+        distributionTailProb = 1e-15; // 极小值保护
+    }
+
     // !!! 修改点：按要求将分数乘以 10
     const distributionScore = (-Math.log(distributionTailProb) / Math.log(logBase)) * 10;
 
@@ -152,4 +162,34 @@ export function calculateEnhancedRarityScore(counts, logBase = 10) {
         distributionScore: distributionScore,
         compositionScore: compositionScore
     };
+}
+
+/**
+ * 计算稀有度分数的历史变化
+ * @param {Array} historyData - 按时间排序的历史数据数组 [{ date, fortune }]
+ * @returns {Array} - 包含日期和对应分数的数组 [{ date, score }]
+ */
+export function calculateRarityScoreHistory(historyData) {
+    const plotData = [];
+    const currentCounts = {};
+
+    historyData.forEach(item => {
+        // 1. 更新计数
+        const outcome = item.fortune;
+        currentCounts[outcome] = (currentCounts[outcome] || 0) + 1;
+
+        // 2. 计算当前累积状态的分数
+        const scoreResult = calculateEnhancedRarityScore(currentCounts);
+
+        if (scoreResult) {
+            // 3. 记录数据
+            plotData.push({
+                date: item.date,
+                score: scoreResult.totalScore,
+                fortune: outcome
+            });
+        }
+    });
+
+    return plotData;
 }
