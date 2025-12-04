@@ -288,11 +288,22 @@ const ProfilePage = ({ isMePage = false }) => {
                                 style={{ minWidth: '150px' }}
                             >
                                 <option value="manual">{t('inputUsername')}</option>
-                                {leaderboardUsers.map(user => (
-                                    <option key={user.username} value={user.username}>
-                                        {user.display_name || user.username}
+
+                                {/* Option to select self if viewing another user's profile */}
+                                {!isMePage && currentUser && (
+                                    <option value={currentUser.username}>
+                                        {t('me')} ({currentUser.display_name || currentUser.username})
                                     </option>
-                                ))}
+                                )}
+
+                                {leaderboardUsers
+                                    .filter(user => user.username !== (profileData?.username)) // Exclude the user whose profile we are viewing
+                                    .filter(user => !(!isMePage && currentUser && user.username === currentUser.username)) // Exclude 'me' from the list if already added above
+                                    .map(user => (
+                                        <option key={user.username} value={user.username}>
+                                            {user.display_name || user.username}
+                                        </option>
+                                    ))}
                             </select>
 
                             {inputMode === 'manual' && (
@@ -333,6 +344,7 @@ const ProfilePage = ({ isMePage = false }) => {
                             comparisonData={comparisonData}
                             comparisonName={comparisonUser}
                             timezone={currentUser?.timezone || 'UTC'}
+                            primaryName={isMePage ? t('me') : profileData?.display_name || profileData?.username}
                         />
                     </Modal>
 

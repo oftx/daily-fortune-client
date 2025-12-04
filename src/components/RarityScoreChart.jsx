@@ -18,7 +18,7 @@ import timezone from 'dayjs/plugin/timezone';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-const RarityScoreChart = ({ data, comparisonData, comparisonName, timezone = 'UTC' }) => {
+const RarityScoreChart = ({ data, comparisonData, comparisonName, timezone = 'UTC', primaryName }) => {
     const { t } = useTranslation();
 
     if (!data || data.length === 0) {
@@ -107,7 +107,7 @@ const RarityScoreChart = ({ data, comparisonData, comparisonName, timezone = 'UT
                     <Line
                         data={processedData}
                         dataKey="score"
-                        name={t('me')}
+                        name={primaryName || t('me')}
                         type="monotone"
                         stroke="#8884d8"
                         strokeWidth={2}
