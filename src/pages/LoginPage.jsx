@@ -36,7 +36,7 @@ const LoginPage = () => {
       setError(response.error || 'Login failed.');
     }
   };
-  
+
   return (
     <div className="page-container auth-container">
       <div className="auth-form-wrapper">

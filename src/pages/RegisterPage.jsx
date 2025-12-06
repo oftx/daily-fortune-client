@@ -25,12 +25,12 @@ const RegisterPage = () => {
     setErrors({});
 
     if (!agreed) {
-        setErrors({ form: t('agreeTermsError') });
-        return;
+      setErrors({ form: t('agreeTermsError') });
+      return;
     }
 
     const response = await api.register(username, email, password);
-    
+
     if (response.success) {
       login(response.data.user, response.data.access_token);
       navigate('/me');
@@ -38,7 +38,7 @@ const RegisterPage = () => {
       if (response.error && Array.isArray(response.error)) {
         const newErrors = {};
         response.error.forEach(err => {
-          const fieldName = err.loc[1]; 
+          const fieldName = err.loc[1];
           if (fieldName) {
             newErrors[fieldName] = err.msg;
           }
@@ -51,7 +51,7 @@ const RegisterPage = () => {
       }
     }
   };
-  
+
   // --- NEW: Functions to show the modals ---
   const showModal = (type) => {
     if (type === 'agreement') {
@@ -70,7 +70,7 @@ const RegisterPage = () => {
   const closeModal = () => {
     setModalContent(null);
   };
-  
+
   const handleLinkClick = (e, type) => {
     e.preventDefault(); // Prevent the link from navigating
     showModal(type);
@@ -85,19 +85,19 @@ const RegisterPage = () => {
             <div className="form-group">
               <label htmlFor="username">{t('userIdLabel')}</label>
               <input type="text" id="username" value={username} onChange={(e) => setUsername(e.target.value)} required />
-              {errors.username && <p className="error-message" style={{textAlign: 'left', marginTop: '5px'}}>{errors.username}</p>}
+              {errors.username && <p className="error-message" style={{ textAlign: 'left', marginTop: '5px' }}>{errors.username}</p>}
             </div>
             <div className="form-group">
               <label htmlFor="email">{t('emailLabel')}</label>
               <input type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-              {errors.email && <p className="error-message" style={{textAlign: 'left', marginTop: '5px'}}>{errors.email}</p>}
+              {errors.email && <p className="error-message" style={{ textAlign: 'left', marginTop: '5px' }}>{errors.email}</p>}
             </div>
             <div className="form-group">
               <label htmlFor="password">{t('passwordLabel')}</label>
               <input type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-              {errors.password && <p className="error-message" style={{textAlign: 'left', marginTop: '5px'}}>{errors.password}</p>}
+              {errors.password && <p className="error-message" style={{ textAlign: 'left', marginTop: '5px' }}>{errors.password}</p>}
             </div>
-            
+
             {/* --- MODIFIED: The terms agreement section --- */}
             <div className="form-group-checkbox">
               <input type="checkbox" id="agree" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} />
@@ -112,9 +112,9 @@ const RegisterPage = () => {
                 </a>
               </label>
             </div>
-            
+
             {errors.form && <p className="error-message">{errors.form}</p>}
-            
+
             <button type="submit" className="auth-button">{t('register')}</button>
           </form>
           <div className="auth-footer">
