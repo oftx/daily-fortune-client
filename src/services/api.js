@@ -201,6 +201,15 @@ const fullApi = {
     }
   },
 
+  exportUserData: async () => {
+    try {
+      const response = await apiClient.get('/users/me/export');
+      return { success: true, data: response.data };
+    } catch (error) {
+      return { success: false, error: parseApiError(error) };
+    }
+  },
+
   changePassword: async (current_password, new_password) => {
     try {
       const response = await apiClient.patch('/users/me/password', { current_password, new_password });

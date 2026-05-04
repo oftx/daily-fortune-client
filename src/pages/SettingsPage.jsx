@@ -22,6 +22,7 @@ const SettingsPage = () => {
   const [useQqAvatar, setUseQqAvatar] = useState(false);
 
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
 
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState('');
@@ -70,7 +71,6 @@ const SettingsPage = () => {
     }
   };
 
-  // --- MODIFIED: The function now updates the token in the context on success ---
   const handleChangePassword = async (currentPassword, newPassword) => {
     const response = await api.changePassword(currentPassword, newPassword);
 
@@ -85,6 +85,29 @@ const SettingsPage = () => {
       success: response.success,
       error: response.error,
     };
+  };
+
+  const handleExportData = async () => {
+    setIsExporting(true);
+    setMessage('');
+    setError('');
+    const response = await api.exportUserData();
+    if (response.success) {
+      const dataStr = JSON.stringify(response.data, null, 2);
+      const blob = new Blob([dataStr], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "daily_fortune_data.json";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      setMessage(t('exportDataSuccess'));
+    } else {
+      setError(`${t('exportDataFailed')} ${response.error || ''}`);
+    }
+    setIsExporting(false);
   };
 
   if (loading) return <div className="page-container">{t('loadingSettings')}</div>;
@@ -166,6 +189,20 @@ const SettingsPage = () => {
             <label>{t('passwordLabel')}</label>
             <button className="change-password-btn" onClick={() => setIsPasswordModalOpen(true)}>
               {t('changePasswordBtn')}
+            </button>
+          </div>
+        </div>
+
+        <div className="settings-section">
+          <h3>{t('dataManagementSection')}</h3>
+          <div className="form-group">
+            <label>{t('exportDataBtn')}</label>
+            <button 
+              className="change-password-btn" 
+              onClick={handleExportData}
+              disabled={isExporting}
+            >
+              {isExporting ? t('exportingData') : t('exportDataBtn')}
             </button>
           </div>
         </div>
